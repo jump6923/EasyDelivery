@@ -36,9 +36,22 @@ public class CartService {
         return new CartListResponseDto(carts);
     }
 
+    public void deleteCart(Long cartId, User user) {
+        cartRepository.delete(getUserCart(cartId, user));
+    }
+
     private void cartExist(User user, Product product) {
         if (cartRepository.existsByUserAndProduct(user, product)) {
             throw new IllegalArgumentException("이미 장바구니에 존재하는 상품입니다.");
         }
+    }
+
+    private Cart getUserCart(Long cartId, User user) {
+        Cart cart = cartRepository.findById(cartId)
+            .orElseThrow(() -> new IllegalArgumentException("장바구니에 존재하지 않는 상품입니다."));
+        if (!cart.getUser().getLoginId().equals(user.getLoginId())) {
+            throw new IllegalArgumentException("회원의 장바구니에 담긴 상품이 아닙니다.");
+        }
+        return cart;
     }
 }

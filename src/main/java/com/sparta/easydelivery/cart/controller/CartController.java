@@ -4,10 +4,13 @@ import com.sparta.easydelivery.cart.dto.CartListResponseDto;
 import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.service.CartService;
+import com.sparta.easydelivery.cart.temp.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
 
     private final CartService cartService;
+    private final UserRepository userRepository;
 
     @PostMapping("")
     public ResponseEntity<CartResponseDto> addCart(
@@ -30,9 +34,19 @@ public class CartController {
     }
 
     @GetMapping("")
-    public ResponseEntity<CartListResponseDto> getCarts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<CartListResponseDto> getCarts(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         CartListResponseDto responseDto = cartService.getCarts(userDetails.getUser());
         return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<?> deleteCart(
+        @PathVariable Long cartId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cartService.deleteCart(cartId, userDetails.getUser());
+        return ResponseEntity.ok().build();
     }
 
 }
