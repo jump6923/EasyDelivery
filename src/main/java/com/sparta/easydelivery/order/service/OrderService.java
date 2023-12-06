@@ -5,10 +5,12 @@ import com.sparta.easydelivery.cart.service.CartService;
 import com.sparta.easydelivery.order.dto.OrderListResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
+import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.order.exception.NotFoundOrderException;
 import com.sparta.easydelivery.order.exception.NotMatchUserException;
 import com.sparta.easydelivery.order.exception.OrderNothingException;
+import com.sparta.easydelivery.order.exception.UnauthorizedAccessException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.ArrayList;
@@ -61,13 +63,27 @@ public class OrderService {
         return new OrderResponseDto(order);
     }
 
+    @Transactional
+    public OrderResponseDto updateOrderStatus(Long orderId, OrderStatusRequestDto requestDto, User user){
+        checkAdmin(user); //일단 권한 확인 로직 추가 -> UserService에 있는게 더 맞다고 생각합니다.
+        Order order = getOrderEntity(orderId, user);
+        order.setStatus(requestDto.getOrderStatusEnum());
+        return new OrderResponseDto(order);
+    }
+
     private Order getOrderEntity(Long orderId, User user) {
         Order order = orderRepository.findById(orderId).orElseThrow(
             () -> new NotFoundOrderException("해당 주문이 존재하지 않습니다.")
         );
-        if(order.getUser().getLoginId().equals(user.getLoginId())){
+        if(user.getRole.equals("USER") && order.getUser().getLoginId().equals(user.getLoginId())){
             throw new NotMatchUserException("해당 주문은 사용자의 주문이 아닙니다.");
         }
         return order;
+    }
+
+    private void checkAdmin(User user){
+        if(!user.getRole().equals("ADMIN")){
+            throw new UnauthorizedAccessException("관리자만 사용할 수 있는 기능입니다.");
+        }
     }
 }

@@ -61,4 +61,8 @@ public class Order extends TimeStamp {
             this.totalPrice += cart.getQuantity() * cart.getProduct().getPrice();
         }
     }
+
+    public void setStatus(OrderStatusEnum status) {
+        this.status = status;
+    }
 }

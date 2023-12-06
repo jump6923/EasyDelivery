@@ -3,6 +3,7 @@ package com.sparta.easydelivery.order.controller;
 import com.sparta.easydelivery.order.dto.OrderListResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
+import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,5 +53,13 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(
+        @PathVariable Long orderId,
+        @RequestBody @Valid OrderStatusRequestDto requestDto,
+        @AuthenticationPrincipal UserDetails userDetails
+    ){
+        OrderResponseDto responseDto = orderService.updateOrderStatus(orderId, requestDto, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
 }
