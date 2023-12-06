@@ -4,12 +4,14 @@ import com.sparta.easydelivery.order.dto.OrderListResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponseDto> createOrder(
-        @RequestBody OrderRequestDto orderRequestDto,
+        @RequestBody @Valid OrderRequestDto orderRequestDto,
         @AuthenticationPrincipal UserDetils userDetils
     ){
         OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, userDetils.getUser());
@@ -37,6 +39,15 @@ public class OrderController {
         @AuthenticationPrincipal UserDetails userDetails
     ){
         OrderListResponseDto responseDto = orderService.getOrders(userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponseDto> getOrder(
+        @PathVariable Long orderId,
+        @AuthenticationPrincipal UserDetails userDetails
+    ){
+        OrderResponseDto responseDto = orderService.getOrder(orderId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
