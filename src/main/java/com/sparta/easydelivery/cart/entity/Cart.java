@@ -1,7 +1,6 @@
 package com.sparta.easydelivery.cart.entity;
 
-import com.sparta.easydelivery.cart.temp.Product;
-import com.sparta.easydelivery.cart.temp.User;
+import com.sparta.easydelivery.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +38,9 @@ public class Cart {
 
     public static Cart create(User user, Product product, int quantity) {
         return new Cart(user, product, quantity);
+    }
+
+    public void quantityUpdate(int quantity) {
+        this.quantity = quantity;
     }
 }

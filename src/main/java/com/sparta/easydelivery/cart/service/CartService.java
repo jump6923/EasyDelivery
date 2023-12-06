@@ -5,9 +5,7 @@ import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.repository.CartRepository;
-import com.sparta.easydelivery.cart.temp.Product;
-import com.sparta.easydelivery.cart.temp.ProductRepository;
-import com.sparta.easydelivery.cart.temp.User;
+import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,6 +40,12 @@ public class CartService {
 
     public void clearCart(User user) {
         cartRepository.clearCartByUser(user);
+    }
+
+    public CartResponseDto updateQuantity(Long cartId, int quantity, User user) {
+        Cart cart = getUserCart(cartId, user);
+        cart.quantityUpdate(quantity);
+        return new CartResponseDto(cart);
     }
 
     private void cartExist(User user, Product product) {
