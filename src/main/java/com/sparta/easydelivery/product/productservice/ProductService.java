@@ -22,7 +22,7 @@ public class ProductService {
 
     private final CartService cartService;
 
-    public ProductResponseDto addProduct(ProductRequestDto requestDto, User user) throws NullPointerException{
+    public ProductResponseDto addProduct(ProductRequestDto requestDto, User user) {
         Product product = new Product(requestDto, user);
         Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(saveProduct);
@@ -42,7 +42,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long productId, ProductRequestDto requestDto, Admin admin) throws NullPointerException{
+    public ProductResponseDto updateProduct(Long productId, ProductRequestDto requestDto, Admin admin) {
         Product product = getProductById(productId);
         validateIsAdmin(user.getUser().getId(), user.getId());
         product.update(requestDto);
@@ -60,7 +60,7 @@ public class ProductService {
             .orElseThrow(() -> new NullPointerException ("주어진 id에 해당하는 제품이 존재하지 않음"));
     }
 
-    void validateIsAdmin(Long AdminId, Long loggedInUserId) throws InvalidModifierException {
+    void validateIsAdmin(Long AdminId, Long loggedInUserId) {
         if (!AdminId.equals(loggedInUserId)) {
             throw new InvalidModifierException(loggedInUserId.toString(),
                 "사용자는 이 게시물을 업데이트/삭제할 권한이 없습니다.");
