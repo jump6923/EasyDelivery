@@ -26,7 +26,7 @@ public class Review {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @JoinColumn(nullable = false)

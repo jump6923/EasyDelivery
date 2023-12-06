@@ -1,14 +1,18 @@
 package com.sparta.easydelivery.review.service;
 
+import com.sparta.easydelivery.review.dto.ReviewListResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewRequestDto;
 import com.sparta.easydelivery.review.dto.ReviewResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewUpdateRequestDto;
 import com.sparta.easydelivery.review.entity.Review;
 import com.sparta.easydelivery.review.repository.ReviewRepository;
-import com.sparta.easydelivery.review.temp.Order;
-import com.sparta.easydelivery.review.temp.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,5 +65,14 @@ public class ReviewService {
             throw new IllegalArgumentException("본인의 리뷰가 아닙니다.");
         }
         return review;
+    }
+
+    public ReviewListResponseDto getReviewList(int page, int size, String sortBy, Boolean isAsc) {
+        Sort.Direction direction =isAsc ? Direction.ASC : Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Review> reviewList = reviewRepository.findAll(pageable);
+        return new ReviewListResponseDto(reviewList);
     }
 }
