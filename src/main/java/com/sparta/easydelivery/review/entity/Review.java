@@ -1,4 +1,4 @@
-package com.sparta.easydelivery.cart.entity;
+package com.sparta.easydelivery.review.entity;
 
 import com.sparta.easydelivery.user.entity.User;
 import jakarta.persistence.Entity;
@@ -8,14 +8,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cart {
+@Getter
+public class Review {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,24 +25,29 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     @JoinColumn(nullable = false)
-    private int quantity;
+    private Float star;
 
-    private Cart(User user, Product product, int quantity) {
+    @JoinColumn(nullable = false)
+    private String content;
+
+    private Review(User user, Float star, String content, Order order) {
         this.user = user;
-        this.product = product;
-        this.quantity = quantity;
+        this.star = star;
+        this.content = content;
+        this.order = order;
     }
 
-    public static Cart create(User user, Product product, int quantity) {
-        return new Cart(user, product, quantity);
+    public static Review create(User user, Float star, String content, Order order) {
+        return new Review(user, star, content, order);
     }
 
-    public void quantityUpdate(int quantity) {
-        this.quantity = quantity;
+    public void update(String content, Float star) {
+        this.content = content;
+        this.star = star;
     }
 }
