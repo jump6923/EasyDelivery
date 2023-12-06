@@ -41,4 +41,9 @@ public class Review {
     public static Review create(User user, Float star, String content, Order order) {
         return new Review(user, star, content, order);
     }
+
+    public void update(String content, Float star) {
+        this.content = content;
+        this.star = star;
+    }
 }

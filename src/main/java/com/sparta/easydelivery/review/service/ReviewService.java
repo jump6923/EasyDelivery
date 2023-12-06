@@ -2,6 +2,7 @@ package com.sparta.easydelivery.review.service;
 
 import com.sparta.easydelivery.review.dto.ReviewRequestDto;
 import com.sparta.easydelivery.review.dto.ReviewResponseDto;
+import com.sparta.easydelivery.review.dto.ReviewUpdateRequestDto;
 import com.sparta.easydelivery.review.entity.Review;
 import com.sparta.easydelivery.review.repository.ReviewRepository;
 import com.sparta.easydelivery.review.temp.Order;
@@ -29,6 +30,12 @@ public class ReviewService {
         return new ReviewResponseDto(review);
     }
 
+    public ReviewResponseDto updateReview(ReviewUpdateRequestDto requestDto, Long reviewId, User user) {
+        Review review = getUserReview(reviewId, user);
+        review.update(requestDto.getContent(), requestDto.getStar());
+        return new ReviewResponseDto(review);
+    }
+
     /**
      * 존재하는 주문인지, 리뷰를 남기려는 사용자의 주문이 맞는지 확인하는 메소드
      */
@@ -39,5 +46,14 @@ public class ReviewService {
             throw new IllegalArgumentException("해당 유저의 주문이 아닙니다.");
         }
         return order;
+    }
+
+    private Review getUserReview(Long reviewId, User user) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+        if (!review.getUser().getLoginId().equals(user.getLoginId())) {
+            throw new IllegalArgumentException("본인의 리뷰가 아닙니다.");
+        }
+        return review;
     }
 }
