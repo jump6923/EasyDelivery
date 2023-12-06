@@ -31,6 +31,11 @@ public class CartService {
         return new CartResponseDto(cart);
     }
 
+    public CartListResponseDto getCarts(User user) {
+        List<Cart> carts = cartRepository.findAllByUser(user);
+        return new CartListResponseDto(carts);
+    }
+
     private void cartExist(User user, Product product) {
         if (cartRepository.existsByUserAndProduct(user, product)) {
             throw new IllegalArgumentException("이미 장바구니에 존재하는 상품입니다.");
