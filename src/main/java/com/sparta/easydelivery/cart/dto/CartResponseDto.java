@@ -8,7 +8,7 @@ public class CartResponseDto {
 
     private Long id;
     private String name;
-    private int price;
+    private Long price;
     private int quantity;
 
     public CartResponseDto(Cart cart) {
