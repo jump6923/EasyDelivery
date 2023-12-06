@@ -2,7 +2,6 @@ package com.sparta.easydelivery.cart.dto;
 
 import com.sparta.easydelivery.cart.entity.Cart;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class CartResponseDto {
@@ -15,7 +14,7 @@ public class CartResponseDto {
     public CartResponseDto(Cart cart) {
         this.id = cart.getId();
         this.name = cart.getProduct().getName();
-        this.price = cart.getProduct().getPrice();
         this.quantity = cart.getQuantity();
+        this.price = cart.getProduct().getPrice() * quantity;
     }
 }
