@@ -31,7 +31,7 @@ public class ReviewController {
 
     @PostMapping("")
     public ResponseEntity<ReviewResponseDto> createReview(
-        @RequestBody ReviewRequestDto requestDto,
+        @Valid @RequestBody ReviewRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         ReviewResponseDto responseDto = reviewService
@@ -42,7 +42,7 @@ public class ReviewController {
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDto> updateReview(
         @PathVariable Long reviewId,
-        @RequestBody ReviewUpdateRequestDto requestDto,
+        @Valid @RequestBody ReviewUpdateRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         ReviewResponseDto responseDto = reviewService
