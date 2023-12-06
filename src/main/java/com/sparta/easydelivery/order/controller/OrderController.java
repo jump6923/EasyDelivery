@@ -1,5 +1,6 @@
 package com.sparta.easydelivery.order.controller;
 
+import com.sparta.easydelivery.order.dto.OrderListResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.service.OrderService;
@@ -7,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +22,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @PostMapping
     public ResponseEntity<OrderResponseDto> createOrder(
         @RequestBody OrderRequestDto orderRequestDto,
         @AuthenticationPrincipal UserDetils userDetils
@@ -26,4 +31,14 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
+
+    @GetMapping
+    public ResponseEntity<OrderListResponseDto> getOrders(
+        @AuthenticationPrincipal UserDetails userDetails
+    ){
+        OrderListResponseDto responseDto = orderService.getOrders(userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
 }

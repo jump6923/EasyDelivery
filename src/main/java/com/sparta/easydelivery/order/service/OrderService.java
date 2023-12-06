@@ -2,6 +2,7 @@ package com.sparta.easydelivery.order.service;
 
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.service.CartService;
+import com.sparta.easydelivery.order.dto.OrderListResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.entity.Order;
@@ -35,5 +36,10 @@ public class OrderService {
         Order saveOrder = orderRepository.save(order);
 
         return new OrderResponseDto(saveOrder);
+    }
+
+    public OrderListResponseDto getOrders(User user){
+        List<Order> orderList = orderRepository.findAllByUser(user);
+        return new OrderListResponseDto(orderList);
     }
 }
