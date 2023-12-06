@@ -28,6 +28,7 @@ public class Cart {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @JoinColumn(nullable = false)
     private int quantity;
 
     private Cart(User user, Product product, int quantity) {
