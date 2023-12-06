@@ -1,5 +1,6 @@
 package com.sparta.easydelivery.review.repository;
 
+import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.review.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 

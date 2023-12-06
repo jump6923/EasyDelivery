@@ -1,5 +1,7 @@
 package com.sparta.easydelivery.cart.entity;
 
+import com.sparta.easydelivery.common.TimeStamp;
+import com.sparta.easydelivery.product.entity.Product;
 import com.sparta.easydelivery.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cart {
+public class Cart extends TimeStamp {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

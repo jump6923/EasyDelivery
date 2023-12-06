@@ -4,6 +4,7 @@ import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
 import com.sparta.easydelivery.product.productservice.ProductService;
 import com.sparta.easydelivery.user.entity.User;
+import com.sparta.easydelivery.user.implement.UserDetailsImpl;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -45,20 +46,20 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable Long productId,
-        @Valid @RequestBody ProductRequestDto requestDto
-        // @AuthenticationPrincipal
+        @Valid @RequestBody ProductRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto, User user);
+        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto, userDetails.getUser());
         return ResponseEntity.ok(responseDto);
     }
 
     // 삭제 기능 - admin만 삭제 가능하도록 구현
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
-        @PathVariable Long productId
-        // @AuthenticationPrincipal
+        @PathVariable Long productId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        productService.deleteProduct(productId, User user);
+        productService.deleteProduct(productId, userDetails.getUser());
         return ResponseEntity.noContent().build();
     }
 }
