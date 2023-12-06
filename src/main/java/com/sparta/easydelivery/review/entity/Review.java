@@ -1,5 +1,7 @@
 package com.sparta.easydelivery.review.entity;
 
+import com.sparta.easydelivery.common.TimeStamp;
+import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Review {
+public class Review extends TimeStamp {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

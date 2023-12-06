@@ -1,5 +1,7 @@
 package com.sparta.easydelivery.review.service;
 
+import com.sparta.easydelivery.order.entity.Order;
+import com.sparta.easydelivery.order.service.OrderService;
 import com.sparta.easydelivery.review.dto.ReviewListResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewRequestDto;
 import com.sparta.easydelivery.review.dto.ReviewResponseDto;
@@ -23,10 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
     public ReviewResponseDto createReview(ReviewRequestDto requestDto, User user) {
-        Order order = getUserOrder(requestDto.getOrderId(), user);
+        Order order = orderService.getOrderEntity(requestDto.getOrderId(), user);
         if (reviewRepository.existsByOrder(order)) {
             throw new IllegalArgumentException("해당 주문은 리뷰가 이미 존재합니다.");
         }
@@ -56,14 +58,6 @@ public class ReviewService {
     /**
      * 존재하는 주문인지, 리뷰를 남기려는 사용자의 주문이 맞는지 확인하는 메소드
      */
-    private Order getUserOrder(Long orderId, User user) {
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
-        if (!order.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalArgumentException("해당 유저의 주문이 아닙니다.");
-        }
-        return order;
-    }
 
     private Review getUserReview(Long reviewId, User user) {
         Review review = reviewRepository.findById(reviewId)

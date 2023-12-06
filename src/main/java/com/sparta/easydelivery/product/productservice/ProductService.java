@@ -1,11 +1,14 @@
 package com.sparta.easydelivery.product.productservice;
 
+import com.sparta.easydelivery.cart.service.CartService;
+import com.sparta.easydelivery.order.service.OrderProductService;
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
 import com.sparta.easydelivery.product.entity.Product;
 import com.sparta.easydelivery.product.exception.InvalidModifierException;
 import com.sparta.easydelivery.product.repository.ProductRepository;
 import com.sparta.easydelivery.user.entity.User;
+import com.sparta.easydelivery.user.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    private final OrderProductService orderProductService;
-
-    private final CartService cartService;
+    private final UserService userService;
 
     public ProductResponseDto addProduct(ProductRequestDto requestDto, User user) {
-        Product product = new Product(requestDto, user);
+        userService.isAdminOrException(user);
+        Product product = new Product(requestDto);
         Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(saveProduct);
     }
@@ -42,14 +44,15 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long productId, ProductRequestDto requestDto, Admin admin) {
+    public ProductResponseDto updateProduct(Long productId, ProductRequestDto requestDto, User user) {
         Product product = getProductById(productId);
-        validateIsAdmin(user.getUser().getId(), user.getId());
+        userService.isAdminOrException(user);
         product.update(requestDto);
         return new ProductResponseDto(product);
     }
 
-    public void deleteProduct(Long productId, Admin admin) {
+    public void deleteProduct(Long productId, User user) {
+        userService.isAdminOrException(user);
         Product product = getProductById(productId);
         productRepository.delete(product);
     }
@@ -60,10 +63,4 @@ public class ProductService {
             .orElseThrow(() -> new NullPointerException ("주어진 id에 해당하는 제품이 존재하지 않음"));
     }
 
-    void validateIsAdmin(Long AdminId, Long loggedInUserId) {
-        if (!AdminId.equals(loggedInUserId)) {
-            throw new InvalidModifierException(loggedInUserId.toString(),
-                "사용자는 이 게시물을 업데이트/삭제할 권한이 없습니다.");
-        }
-    }
 }

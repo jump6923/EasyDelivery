@@ -5,6 +5,8 @@ import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.repository.CartRepository;
+import com.sparta.easydelivery.product.entity.Product;
+import com.sparta.easydelivery.product.repository.ProductRepository;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ public class CartService {
     }
 
     public CartListResponseDto getCarts(User user) {
-        List<Cart> carts = cartRepository.findAllByUser(user);
+        List<Cart> carts = getCartList(user);
         return new CartListResponseDto(carts);
     }
 
@@ -61,5 +63,9 @@ public class CartService {
             throw new IllegalArgumentException("회원의 장바구니에 담긴 상품이 아닙니다.");
         }
         return cart;
+    }
+
+    public List<Cart> getCartList(User user){  //List<Cart>가 주문 도메인에서 필요해서 추가
+        return cartRepository.findAllByUser(user);
     }
 }

@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.cart.repository;
 
 import com.sparta.easydelivery.cart.entity.Cart;
+import com.sparta.easydelivery.product.entity.Product;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

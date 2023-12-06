@@ -96,4 +96,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
     }
+
+    public void isAdminOrException(User user){
+        if(user.getRole() != UserRoleEnum.ADMIN){
+            throw new IllegalArgumentException("관리자만 접근 가능합니다.");
+        }
+    }
 }
