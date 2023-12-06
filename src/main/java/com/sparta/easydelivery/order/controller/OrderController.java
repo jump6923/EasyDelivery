@@ -1,6 +1,6 @@
 package com.sparta.easydelivery.order.controller;
 
-import com.sparta.easydelivery.order.dto.OrderListResponseDto;
+import com.sparta.easydelivery.order.dto.OrderMapResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
@@ -30,18 +30,18 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDto> createOrder(
         @RequestBody @Valid OrderRequestDto orderRequestDto,
-        @AuthenticationPrincipal UserDetils userDetils
+        @AuthenticationPrincipal UserDetails userDetails
     ){
-        OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, userDetils.getUser());
+        OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, userDetails.getUser());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping
-    public ResponseEntity<OrderListResponseDto> getOrders(
+    public ResponseEntity<OrderMapResponseDto> getOrders(
         @AuthenticationPrincipal UserDetails userDetails
     ){
-        OrderListResponseDto responseDto = orderService.getOrders(userDetails.getUser());
+        OrderMapResponseDto responseDto = orderService.getOrders(userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 

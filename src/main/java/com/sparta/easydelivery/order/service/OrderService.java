@@ -2,18 +2,18 @@ package com.sparta.easydelivery.order.service;
 
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.service.CartService;
-import com.sparta.easydelivery.order.dto.OrderListResponseDto;
+import com.sparta.easydelivery.order.dto.OrderMapResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.entity.Order;
+import com.sparta.easydelivery.order.entity.OrderStatusEnum;
 import com.sparta.easydelivery.order.exception.NotFoundOrderException;
 import com.sparta.easydelivery.order.exception.NotMatchUserException;
 import com.sparta.easydelivery.order.exception.OrderNothingException;
 import com.sparta.easydelivery.order.exception.UnauthorizedAccessException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,17 +45,23 @@ public class OrderService {
         return new OrderResponseDto(saveOrder);
     }
 
-    public OrderListResponseDto getOrders(User user){
-        List<Order> orderList = new ArrayList<>();
+    public OrderMapResponseDto getOrders(User user){
+        OrderMapResponseDto orderMap = new OrderMapResponseDto();
+
         if(user.getRole().equals(UserRoleEnum.USER)) {  // 사용자가 조회한 경우
-            orderList = orderRepository.findAllByUser(user);
-
+            for(OrderStatusEnum status : OrderStatusEnum.values()){
+                orderMap.setOrderToMap(status, orderRepository.findAllByUserAndStatus(user, status).stream()
+                    .map(OrderResponseDto::new).toList());
+            }
         }
-        else{
-            orderList = orderRepository.findAll(); // 관리자가 조회한 경우
+        else{ // 관리자가 조회한 경우
+            for(OrderStatusEnum status : OrderStatusEnum.values()){
+                orderMap.setOrderToMap(status, orderRepository.findAllByStatus(status).stream()
+                    .map(OrderResponseDto::new).toList());
+            }
         }
 
-        return new OrderListResponseDto(orderList);
+        return orderMap;
     }
 
     public OrderResponseDto getOrder(Long orderId, User user){
@@ -80,7 +86,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(
             () -> new NotFoundOrderException("해당 주문이 존재하지 않습니다.")
         );
-        if(user.getRole.equals("USER") && order.getUser().getLoginId().equals(user.getLoginId())){
+        if(user.getRole.equals("USER") && order.getUser().getUsername().equals(user.getUsername())){
             throw new NotMatchUserException("해당 주문은 사용자의 주문이 아닙니다.");
         }
         return order;
