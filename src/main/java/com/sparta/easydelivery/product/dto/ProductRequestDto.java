@@ -7,9 +7,9 @@ public class ProductRequestDto {
 
     private String category;
 
-    private String productName;
+    private String Name;
 
-    private Long productPrice;
+    private Long Price;
 
     private String productDetails;
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +20,8 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 @Entity
 @Getter
 @Table(name = "product")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product {
-    // OrderProduct 와 1대 N 관계
-    @OneToMany(targetEntity = OrderProduct.class, mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<OrderProduct> orderProductList = new ArrayList<>();
-
-    // Cart 와 1대 N 관계
-    @OneToMany(targetEntity = Cart.class, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Cart> cartList = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,25 +31,25 @@ public class Product {
     private String category;
 
     @Column(nullable = false)
-    private String productName;
+    private String name;
 
     @Column(nullable = false)
-    private Long productPrice;
+    private Long price;
 
     @Column(nullable = false)
     private String productDetails;
 
-    public Product(ProductRequestDto requestDto, Admin admin) {
+    public Product(ProductRequestDto requestDto, User user) {
         this.category = requestDto.getCategory();
-        this.productName = requestDto.getProductName();
-        this.productPrice = requestDto.getProductPrice();
+        this.name = requestDto.getName();
+        this.price = requestDto.getPrice();
         this.productDetails = requestDto.getProductDetails();
     }
 
     public void update(ProductRequestDto requestDto) {
         this.category = requestDto.getCategory();
-        this.productName = requestDto.getProductName();
-        this.productPrice = requestDto.getProductPrice();
+        this.name = requestDto.getName();
+        this.price = requestDto.getPrice();
         this.productDetails = requestDto.getProductDetails();
     }
 }

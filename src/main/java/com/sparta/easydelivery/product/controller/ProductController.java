@@ -3,9 +3,11 @@ package com.sparta.easydelivery.product.controller;
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
 import com.sparta.easydelivery.product.productservice.ProductService;
+import com.sparta.easydelivery.user.entity.User;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,17 +47,17 @@ public class ProductController {
         @Valid @RequestBody ProductRequestDto requestDto
         // @AuthenticationPrincipal
     ) {
-        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto);
+        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto, User user);
         return ResponseEntity.ok(responseDto);
     }
 
     // 삭제 기능 - admin만 삭제 가능하도록 구현
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
         @PathVariable Long productId
         // @AuthenticationPrincipal
     ) {
-        productService.deleteProduct(productId);
+        productService.deleteProduct(productId, User user);
         return ResponseEntity.noContent().build();
     }
 }
