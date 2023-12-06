@@ -5,6 +5,7 @@ import com.sparta.easydelivery.review.dto.ReviewRequestDto;
 import com.sparta.easydelivery.review.dto.ReviewResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewUpdateRequestDto;
 import com.sparta.easydelivery.review.service.ReviewService;
+import com.sparta.easydelivery.user.implement.UserDetailsImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
