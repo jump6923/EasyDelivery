@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.order.entity;
 
 import com.sparta.easydelivery.cart.entity.Cart;
+import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "order_product")
 @NoArgsConstructor
 @Entity
-public class OrderProduct {
+public class OrderProduct extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

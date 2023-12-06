@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.order.entity;
 
 import com.sparta.easydelivery.cart.entity.Cart;
+import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.user.entity.User;
 import jakarta.persistence.Column;

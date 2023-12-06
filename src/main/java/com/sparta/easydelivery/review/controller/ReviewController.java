@@ -70,7 +70,7 @@ public class ReviewController {
         @RequestParam(defaultValue = "1") @Positive(message = "페이지는 양수만 가능합니다.") int page,
         @RequestParam(defaultValue = "10") @Min(value = 10, message = "페이지당 리뷰는 최소 10입니다.")
         @Max(value = 50, message = "페이지당 리뷰는 최대 50입니다.") int size,
-        @RequestParam(defaultValue = "createAt") String sortBy,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
         @RequestParam(defaultValue = "false") String flag) {
 
         if (!flag.equals("true") && !flag.equals("false")) {

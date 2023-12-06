@@ -1,5 +1,6 @@
 package com.sparta.easydelivery.product.entity;
 
+import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "product")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product {
+public class Product extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
