@@ -71,6 +71,11 @@ public class OrderService {
         return new OrderResponseDto(order);
     }
 
+    public void deleteOrder(Long orderId, User user){
+        Order order = getOrderEntity(orderId, user);
+        orderRepository.delete(order);
+    }
+
     private Order getOrderEntity(Long orderId, User user) {
         Order order = orderRepository.findById(orderId).orElseThrow(
             () -> new NotFoundOrderException("해당 주문이 존재하지 않습니다.")
