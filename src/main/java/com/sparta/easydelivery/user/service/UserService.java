@@ -63,16 +63,14 @@ public class UserService {
     }
 
     public ProfileResponseDto getUser(Long id) {
-        User profileUser = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
+        User profileUser = findUser(id);
 
         return new ProfileResponseDto(profileUser);
     }
 
     @Transactional
     public ProfileResponseDto changeUserInfo(IntroduceRequestDto requestDto, Long id) {
-        User changeUser = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
+        User changeUser = findUser(id);
 
         changeUser.changeUserInfo(requestDto);
         return new ProfileResponseDto(changeUser);
@@ -80,19 +78,22 @@ public class UserService {
 
     @Transactional
     public void changePassword(PasswordRequestDto requestDto, Long id) {
-        User changeUser = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
+        User changeUser = findUser(id);
 
         if (requestDto.getChangePassword() != null) {
             if (requestDto.getOriginPassword() == null) {
                 throw new NullPointerException("기존 비밀번호를 입력해 주세요");
             }
             if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
-                requestDto.setChangePassword(passwordEncoder.encode(requestDto.getChangePassword()));
-                changeUser.changePassword(requestDto);
+                changeUser.setPassword(passwordEncoder.encode(requestDto.getChangePassword()));
             } else {
                 throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
             }
         }
+    }
+
+    public User findUser(Long id){
+        return userRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
     }
 }

@@ -1,7 +1,6 @@
 package com.sparta.easydelivery.user.entity;
 
 import com.sparta.easydelivery.user.dto.IntroduceRequestDto;
-import com.sparta.easydelivery.user.dto.PasswordRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,12 +56,6 @@ public class User {
 
         if (requestDto.getAddress() != null) {
             this.introduce = requestDto.getAddress();
-        }
-    }
-
-    public void changePassword(PasswordRequestDto requestDto) {
-        if (requestDto.getChangePassword() != null) {
-            this.password = requestDto.getChangePassword();
         }
     }
 
