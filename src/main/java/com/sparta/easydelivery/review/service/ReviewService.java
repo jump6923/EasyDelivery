@@ -7,6 +7,7 @@ import com.sparta.easydelivery.review.dto.ReviewUpdateRequestDto;
 import com.sparta.easydelivery.review.entity.Review;
 import com.sparta.easydelivery.review.repository.ReviewRepository;
 import com.sparta.easydelivery.user.entity.User;
+import com.sparta.easydelivery.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,12 @@ public class ReviewService {
     }
 
     public void deleteReview(Long reviewId, User user) {
+        if (user.getRole() == UserRoleEnum.ADMIN) {
+            Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+            reviewRepository.delete(review);
+            return;
+        }
         Review review = getUserReview(reviewId, user);
         reviewRepository.delete(review);
     }
