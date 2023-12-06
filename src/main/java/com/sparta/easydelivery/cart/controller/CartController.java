@@ -4,7 +4,6 @@ import com.sparta.easydelivery.cart.dto.CartListResponseDto;
 import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.service.CartService;
-import com.sparta.easydelivery.cart.temp.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartController {
 
     private final CartService cartService;
-    private final UserRepository userRepository;
 
     @PostMapping("")
     public ResponseEntity<CartResponseDto> addCart(
@@ -45,7 +43,14 @@ public class CartController {
     public ResponseEntity<?> deleteCart(
         @PathVariable Long cartId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         cartService.deleteCart(cartId, userDetails.getUser());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> clearCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        cartService.clearCart(userDetails.getUser());
         return ResponseEntity.ok().build();
     }
 

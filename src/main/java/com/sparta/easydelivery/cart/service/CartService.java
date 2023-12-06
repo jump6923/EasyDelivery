@@ -40,6 +40,10 @@ public class CartService {
         cartRepository.delete(getUserCart(cartId, user));
     }
 
+    public void clearCart(User user) {
+        cartRepository.clearCartByUser(user);
+    }
+
     private void cartExist(User user, Product product) {
         if (cartRepository.existsByUserAndProduct(user, product)) {
             throw new IllegalArgumentException("이미 장바구니에 존재하는 상품입니다.");
