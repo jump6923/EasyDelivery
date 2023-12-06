@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.order.entity;
 
 import com.sparta.easydelivery.cart.entity.Cart;
+import com.sparta.easydelivery.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -5,12 +5,12 @@ import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.service.OrderService;
+import com.sparta.easydelivery.user.implement.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,7 +30,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDto> createOrder(
         @RequestBody @Valid OrderRequestDto orderRequestDto,
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, userDetails.getUser());
 
@@ -39,7 +39,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<OrderMapResponseDto> getOrders(
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         OrderMapResponseDto responseDto = orderService.getOrders(userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
@@ -48,7 +48,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponseDto> getOrder(
         @PathVariable Long orderId,
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         OrderResponseDto responseDto = orderService.getOrder(orderId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
@@ -58,7 +58,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseDto> updateOrderStatus(
         @PathVariable Long orderId,
         @RequestBody @Valid OrderStatusRequestDto requestDto,
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         OrderResponseDto responseDto = orderService.updateOrderStatus(orderId, requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
@@ -67,7 +67,7 @@ public class OrderController {
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrder(
         @PathVariable Long orderId,
-        @AuthenticationPrincipal UserDetails userDetails
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         orderService.deleteOrder(orderId, userDetails.getUser());
         return ResponseEntity.noContent().build();

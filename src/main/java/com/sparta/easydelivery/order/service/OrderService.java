@@ -14,6 +14,8 @@ import com.sparta.easydelivery.order.exception.OrderNothingException;
 import com.sparta.easydelivery.order.exception.UnauthorizedAccessException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
+import com.sparta.easydelivery.user.entity.UserRoleEnum;
+import com.sparta.easydelivery.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class OrderService {
     private final OrderProductService orderProductService;
 
     private final CartService cartService;
+
+    private final UserService userService;
 
     public OrderResponseDto createOrder(OrderRequestDto requestDto, User user){
         // dto -> entity
@@ -71,7 +75,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderStatusRequestDto requestDto, User user){
-        checkAdmin(user); //일단 권한 확인 로직 추가 -> UserService에 있는게 더 맞다고 생각합니다.
+        userService.isAdminOrException(user);
         Order order = getOrderEntity(orderId, user);
         order.setStatus(requestDto.getOrderStatusEnum());
         return new OrderResponseDto(order);
@@ -82,19 +86,14 @@ public class OrderService {
         orderRepository.delete(order);
     }
 
-    private Order getOrderEntity(Long orderId, User user) {
+    public Order getOrderEntity(Long orderId, User user) {
         Order order = orderRepository.findById(orderId).orElseThrow(
             () -> new NotFoundOrderException("해당 주문이 존재하지 않습니다.")
         );
-        if(user.getRole.equals("USER") && order.getUser().getUsername().equals(user.getUsername())){
+        if(user.getRole() == UserRoleEnum.USER && order.getUser().getUsername().equals(user.getUsername())){
             throw new NotMatchUserException("해당 주문은 사용자의 주문이 아닙니다.");
         }
         return order;
     }
 
-    private void checkAdmin(User user){
-        if(!user.getRole().equals("ADMIN")){
-            throw new UnauthorizedAccessException("관리자만 사용할 수 있는 기능입니다.");
-        }
-    }
 }

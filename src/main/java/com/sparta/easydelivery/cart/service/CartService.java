@@ -5,6 +5,8 @@ import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.repository.CartRepository;
+import com.sparta.easydelivery.product.entity.Product;
+import com.sparta.easydelivery.product.repository.ProductRepository;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
