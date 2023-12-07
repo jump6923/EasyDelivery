@@ -15,9 +15,8 @@ public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
 
     public void ConvertCartToOrderProduct(List<Cart> cartList, Order order){
-        for(Cart cart : cartList){
-            OrderProduct orderProduct = new OrderProduct(cart, order);
-            orderProductRepository.save(orderProduct);
-        }
+        List<OrderProduct> orderProducts = cartList.stream()
+            .map(cart -> new OrderProduct(cart, order)).toList();
+        orderProductRepository.saveAll(orderProducts);
     }
 }
