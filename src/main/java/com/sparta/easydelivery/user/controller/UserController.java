@@ -56,8 +56,8 @@ public class UserController {
     }
 
     @PatchMapping("/admin/block")
-    public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requsetDto,
+    public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requestDto,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ResponseEntity.ok(userService.blockedChangeUser(requsetDto,userDetails.getUser().getId()));
+        return ResponseEntity.ok(userService.blockedChangeUser(requestDto,userDetails.getUser().getId()));
     }
 }
