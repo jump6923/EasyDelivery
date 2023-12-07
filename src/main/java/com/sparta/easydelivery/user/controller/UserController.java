@@ -75,4 +75,10 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId, userDetails.getUser().getId()));
     }
 
+    @PatchMapping("/admin/role")
+    public ResponseEntity<?> toggleRole(@RequestBody RoleRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok(userService.changeRole(requestDto, userDetails.getUser().getId()));
+    }
+
 }

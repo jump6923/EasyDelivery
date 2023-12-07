@@ -62,6 +62,10 @@ public class UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+
+        if(user.isBlocked()){
+            throw new IllegalArgumentException("차단된 유저 입니다.");
+        }
     }
 
     public ProfileResponseDto getUser(Long id) {
@@ -123,13 +127,6 @@ public class UserService {
         return new BlockResponseDto(resultBlocked);
     }
 
-//    public List<User> getUserList(Long id){
-//        User admin = findUser(id);
-//        isAdminOrException(admin); //관리자 체크
-//
-//        return userRepository.findAllUser();
-//    }
-
     public List<UserResponseDto> getUserList(Long id) {
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
@@ -150,5 +147,24 @@ public class UserService {
         Optional<User> user = userRepository.findById(userId);
 
         return new UserResponseDto(user.get());
+    }
+
+    @Transactional
+    public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+        UserRoleEnum userRoleEnum;
+
+        String username = requestDto.getUsername();
+        Optional<User> checkUsername = userRepository.findByUsername(username);
+
+        if (checkUsername.get().getRole()==UserRoleEnum.ADMIN) {
+            checkUsername.get().setRole(UserRoleEnum.USER);
+            userRoleEnum = UserRoleEnum.USER;
+        } else {
+            checkUsername.get().setRole(UserRoleEnum.ADMIN);
+            userRoleEnum = UserRoleEnum.ADMIN;
+        }
+        return new RoleResponseDto(userRoleEnum);
     }
 }
