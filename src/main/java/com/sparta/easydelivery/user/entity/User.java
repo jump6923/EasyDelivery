@@ -4,11 +4,9 @@ import com.sparta.easydelivery.user.dto.IntroduceRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
@@ -96,5 +94,23 @@ public class User {
 
     public void naverIntegration(String naverId) {
         this.naverId = naverId;
+    }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    public boolean changeAccess() {
+        blocked = !blocked;
+        return blocked;
+    }
+
+    public UserRoleEnum changeRole() {
+        if (role == UserRoleEnum.ADMIN) {
+            role = UserRoleEnum.USER;
+            return role;
+        }
+        role = UserRoleEnum.ADMIN;
+        return role;
     }
 }
