@@ -54,4 +54,10 @@ public class UserController {
         userService.changePassword(requestDto, userDetails.getUser().getId());
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/admin/block")
+    public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requsetDto,
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok(userService.blockedChangeUser(requsetDto,userDetails.getUser().getId()));
+    }
 }

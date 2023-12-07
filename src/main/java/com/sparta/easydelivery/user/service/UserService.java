@@ -25,7 +25,7 @@ public class UserService {
         String email = requestDto.getEmail();
         String introduce = requestDto.getIntroduce();
         String address = requestDto.getAddress();
-
+        boolean blocked = false;
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
             if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
@@ -46,7 +46,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        User user = new User(username, password, email, introduce, address, role);
+        User user = new User(username, password, email, introduce, address, role, blocked);
         userRepository.save(user);
     }
 
@@ -92,14 +92,32 @@ public class UserService {
         }
     }
 
-    public User findUser(Long id){
+    public User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
     }
 
-    public void isAdminOrException(User user){
-        if(user.getRole() != UserRoleEnum.ADMIN){
+    public void isAdminOrException(User user) {
+        if (user.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("관리자만 접근 가능합니다.");
         }
+    }
+
+    @Transactional
+    public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
+        User user = findUser(id);
+        isAdminOrException(user); //관리자 체크
+        boolean resultBlocked;
+
+        String username = requestDto.getUsername();
+        Optional<User> checkUsername = userRepository.findByUsername(username);
+        if (checkUsername.get().getBlocked()) { //blocked이 이미 true이면 //근데 왜 @Getter 안먹힘?
+            checkUsername.get().setBlocked(false);
+            resultBlocked = false;
+        } else {
+            checkUsername.get().setBlocked(true);
+            resultBlocked = true;
+        }
+        return new BlockResponseDto(resultBlocked);
     }
 }
