@@ -9,12 +9,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,14 @@ public class ProductController {
         @PathVariable Long productId) {
         ProductResponseDto responseDto = productService.getProduct(productId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    // 상품 추가
+    @PostMapping
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        ProductResponseDto responseDto = productService.addProduct(requestDto, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     // 수정 기능 - admin만 수정 가능하도록 구현
