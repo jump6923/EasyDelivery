@@ -1,18 +1,16 @@
 package com.sparta.easydelivery.product.productservice;
 
-import com.sparta.easydelivery.cart.service.CartService;
-import com.sparta.easydelivery.order.service.OrderProductService;
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
+import com.sparta.easydelivery.product.dto.ProductUpdateRequestDto;
 import com.sparta.easydelivery.product.entity.Product;
-import com.sparta.easydelivery.product.exception.InvalidModifierException;
+import com.sparta.easydelivery.product.exception.NotFoundProductException;
 import com.sparta.easydelivery.product.repository.ProductRepository;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +42,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long productId, ProductRequestDto requestDto, User user) {
+    public ProductResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, User user) {
         Product product = getProductById(productId);
         userService.isAdminOrException(user);
         product.update(requestDto);
@@ -59,8 +57,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Product getProductById(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(() -> new NullPointerException ("주어진 id에 해당하는 제품이 존재하지 않음"));
+        return productRepository.findById(productId).orElseThrow(NotFoundProductException::new);
     }
 
 }

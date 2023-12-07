@@ -2,15 +2,15 @@ package com.sparta.easydelivery.order.service;
 
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.service.CartService;
+import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.order.dto.OrderMapResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.order.entity.OrderStatusEnum;
+import com.sparta.easydelivery.order.exception.EmptyCartException;
 import com.sparta.easydelivery.order.exception.NotFoundOrderException;
-import com.sparta.easydelivery.order.exception.NotMatchUserException;
-import com.sparta.easydelivery.order.exception.OrderNothingException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
@@ -37,7 +37,7 @@ public class OrderService {
         Order order = new Order(requestDto, user);
         List<Cart> cartList = cartService.getCartList(user); //사용자의 장바구니
         if(cartList.isEmpty()){
-            throw new OrderNothingException("주문 할 상품이 없습니다.");
+            throw new EmptyCartException();
         }
         order.setTotalPrice(cartList); // 장바구니 상품 가격*수량의 합계를 총가격에 저장
         Order saveOrder = orderRepository.save(order);
@@ -86,11 +86,9 @@ public class OrderService {
     }
 
     public Order getOrderEntity(Long orderId, User user) {
-        Order order = orderRepository.findById(orderId).orElseThrow(
-            () -> new NotFoundOrderException("해당 주문이 존재하지 않습니다.")
-        );
+        Order order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
         if(user.getRole() == UserRoleEnum.USER && !order.getUser().getUsername().equals(user.getUsername())){
-            throw new NotMatchUserException("해당 주문은 사용자의 주문이 아닙니다.");
+            throw new UnauthorizedUserException();
         }
         return order;
     }

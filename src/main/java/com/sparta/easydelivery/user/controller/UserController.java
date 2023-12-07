@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("/profile/password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordRequestDto requestDto,
+    public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordRequestDto requestDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         userService.changePassword(requestDto, userDetails.getUser().getId());

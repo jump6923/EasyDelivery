@@ -1,8 +1,14 @@
 package com.sparta.easydelivery.user.service;
 
+import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
+import com.sparta.easydelivery.user.exception.BlockedUserException;
+import com.sparta.easydelivery.user.exception.DuplicatedUsernameException;
+import com.sparta.easydelivery.user.exception.InvalidPasswordException;
+import com.sparta.easydelivery.user.exception.InvalidTokenException;
+import com.sparta.easydelivery.user.exception.NotFoundUserException;
 import com.sparta.easydelivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +37,7 @@ public class UserService {
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
             if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+                throw new InvalidTokenException();
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -45,7 +51,7 @@ public class UserService {
 
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new DuplicatedUsernameException();
         }
 
         User user = new User(username, password, email, introduce, address, role, blocked);
@@ -56,15 +62,14 @@ public class UserService {
         String username = userRequestDto.getUsername();
         String password = userRequestDto.getPassword();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 유저가 없습니다."));
+        User user = userRepository.findByUsername(username).orElseThrow(NotFoundUserException::new);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
         }
 
         if(user.isBlocked()){
-            throw new IllegalArgumentException("차단된 유저 입니다.");
+            throw new BlockedUserException();
         }
     }
 
@@ -86,26 +91,21 @@ public class UserService {
     public void changePassword(PasswordRequestDto requestDto, Long id) {
         User changeUser = findUser(id);
 
-        if (requestDto.getChangePassword() != null) {
-            if (requestDto.getOriginPassword() == null) {
-                throw new NullPointerException("기존 비밀번호를 입력해 주세요");
-            }
-            if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
-                changeUser.setPassword(passwordEncoder.encode(requestDto.getChangePassword()));
-            } else {
-                throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
-            }
+        if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
+            changeUser.setPassword(passwordEncoder.encode(requestDto.getChangePassword()));
+        } else {
+            throw new InvalidPasswordException();
         }
+
     }
 
     public User findUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 id에 회원이 존재하지 않습니다."));
+        return userRepository.findById(id).orElseThrow(NotFoundUserException::new);
     }
 
     public void isAdminOrException(User user) {
         if (user.getRole() != UserRoleEnum.ADMIN) {
-            throw new IllegalArgumentException("관리자만 접근 가능합니다.");
+            throw new UnauthorizedUserException();
         }
     }
 

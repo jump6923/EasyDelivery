@@ -4,9 +4,12 @@ import com.sparta.easydelivery.cart.dto.CartListResponseDto;
 import com.sparta.easydelivery.cart.dto.CartRequestDto;
 import com.sparta.easydelivery.cart.dto.CartResponseDto;
 import com.sparta.easydelivery.cart.entity.Cart;
+import com.sparta.easydelivery.cart.exception.DuplicatedProductInCartException;
+import com.sparta.easydelivery.cart.exception.NotFoundCartException;
 import com.sparta.easydelivery.cart.repository.CartRepository;
+import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.product.entity.Product;
-import com.sparta.easydelivery.product.repository.ProductRepository;
+import com.sparta.easydelivery.product.productservice.ProductService;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +23,10 @@ public class CartService {
 
     private final CartRepository cartRepository;
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     public CartResponseDto addCart(CartRequestDto requestDto, User user) {
-        Product product = productRepository.findById(requestDto.getProductId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+        Product product = productService.getProductById(requestDto.getProductId());
         cartExist(user, product);
         Cart cart = Cart.create(user, product, requestDto.getQuantity());
         cartRepository.save(cart);
@@ -52,15 +54,15 @@ public class CartService {
 
     private void cartExist(User user, Product product) {
         if (cartRepository.existsByUserAndProduct(user, product)) {
-            throw new IllegalArgumentException("이미 장바구니에 존재하는 상품입니다.");
+            throw new DuplicatedProductInCartException();
         }
     }
 
     private Cart getUserCart(Long cartId, User user) {
         Cart cart = cartRepository.findById(cartId)
-            .orElseThrow(() -> new IllegalArgumentException("장바구니에 존재하지 않는 상품입니다."));
+            .orElseThrow(NotFoundCartException::new);
         if (!cart.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalArgumentException("회원의 장바구니에 담긴 상품이 아닙니다.");
+            throw new UnauthorizedUserException();
         }
         return cart;
     }

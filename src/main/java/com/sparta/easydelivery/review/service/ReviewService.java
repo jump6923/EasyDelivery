@@ -1,12 +1,17 @@
 package com.sparta.easydelivery.review.service;
 
+import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.order.entity.Order;
+import com.sparta.easydelivery.order.entity.OrderStatusEnum;
 import com.sparta.easydelivery.order.service.OrderService;
 import com.sparta.easydelivery.review.dto.ReviewListResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewRequestDto;
 import com.sparta.easydelivery.review.dto.ReviewResponseDto;
 import com.sparta.easydelivery.review.dto.ReviewUpdateRequestDto;
 import com.sparta.easydelivery.review.entity.Review;
+import com.sparta.easydelivery.review.exception.DuplicatedReviewException;
+import com.sparta.easydelivery.review.exception.NotCompletedOrderException;
+import com.sparta.easydelivery.review.exception.NotFoundReviewException;
 import com.sparta.easydelivery.review.repository.ReviewRepository;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
@@ -29,8 +34,11 @@ public class ReviewService {
 
     public ReviewResponseDto createReview(ReviewRequestDto requestDto, User user) {
         Order order = orderService.getOrderEntity(requestDto.getOrderId(), user);
+        if(order.getStatus()!= OrderStatusEnum.COMPLETION){
+            throw new NotCompletedOrderException();
+        }
         if (reviewRepository.existsByOrder(order)) {
-            throw new IllegalArgumentException("해당 주문은 리뷰가 이미 존재합니다.");
+            throw new DuplicatedReviewException();
         }
 
         Review review = Review.create(user, requestDto.getStar(), requestDto.getContent(), order);
@@ -47,7 +55,7 @@ public class ReviewService {
     public void deleteReview(Long reviewId, User user) {
         if (user.getRole() == UserRoleEnum.ADMIN) {
             Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+                .orElseThrow(NotFoundReviewException::new);
             reviewRepository.delete(review);
             return;
         }
@@ -61,9 +69,9 @@ public class ReviewService {
 
     private Review getUserReview(Long reviewId, User user) {
         Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+            .orElseThrow(NotFoundReviewException::new);
         if (!review.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalArgumentException("본인의 리뷰가 아닙니다.");
+            throw new UnauthorizedUserException();
         }
         return review;
     }
