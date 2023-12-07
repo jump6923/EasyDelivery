@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,13 +35,17 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(String username, String password, String email, String introduce, String address, UserRoleEnum role) {
+    @Column(nullable = false)
+    private boolean blocked;
+
+    public User(String username, String password, String email, String introduce, String address, UserRoleEnum role, boolean blocked) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.introduce = introduce;
         this.address = address;
         this.role = role;
+        this.blocked = blocked;
     }
 
     public void changeUserInfo(IntroduceRequestDto requestDto) {
@@ -58,5 +61,4 @@ public class User {
             this.address = requestDto.getAddress();
         }
     }
-
 }

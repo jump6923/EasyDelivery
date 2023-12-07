@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +32,7 @@ public class UserService {
         String email = requestDto.getEmail();
         String introduce = requestDto.getIntroduce();
         String address = requestDto.getAddress();
-
+        boolean blocked = false;
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
             if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
@@ -51,7 +53,7 @@ public class UserService {
             throw new DuplicatedUsernameException();
         }
 
-        User user = new User(username, password, email, introduce, address, role);
+        User user = new User(username, password, email, introduce, address, role, blocked);
         userRepository.save(user);
     }
 
@@ -63,6 +65,10 @@ public class UserService {
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidPasswordException();
+        }
+
+        if(user.isBlocked()){
+            throw new IllegalArgumentException("차단된 유저 입니다.");
         }
     }
 
@@ -100,5 +106,64 @@ public class UserService {
         if (user.getRole() != UserRoleEnum.ADMIN) {
             throw new UnauthorizedUserException();
         }
+    }
+
+    @Transactional
+    public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+        boolean resultBlocked;
+
+        String username = requestDto.getUsername();
+        Optional<User> checkUsername = userRepository.findByUsername(username);
+        if (checkUsername.get().isBlocked()) {
+            checkUsername.get().setBlocked(false);
+            resultBlocked = false;
+        } else {
+            checkUsername.get().setBlocked(true);
+            resultBlocked = true;
+        }
+        return new BlockResponseDto(resultBlocked);
+    }
+
+    public List<UserResponseDto> getUserList(Long id) {
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+
+        List<User> userList = userRepository.findAll();
+        List<UserResponseDto> responseDto = new ArrayList<>();
+
+        for (User user : userList) {
+            responseDto.add(new UserResponseDto(user));
+        }
+        return responseDto;
+    }
+
+    public UserResponseDto getUser(Long userId, Long id) {
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+
+        Optional<User> user = userRepository.findById(userId);
+
+        return new UserResponseDto(user.get());
+    }
+
+    @Transactional
+    public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+        UserRoleEnum userRoleEnum;
+
+        String username = requestDto.getUsername();
+        Optional<User> checkUsername = userRepository.findByUsername(username);
+
+        if (checkUsername.get().getRole()==UserRoleEnum.ADMIN) {
+            checkUsername.get().setRole(UserRoleEnum.USER);
+            userRoleEnum = UserRoleEnum.USER;
+        } else {
+            checkUsername.get().setRole(UserRoleEnum.ADMIN);
+            userRoleEnum = UserRoleEnum.ADMIN;
+        }
+        return new RoleResponseDto(userRoleEnum);
     }
 }
