@@ -2,6 +2,7 @@ package com.sparta.easydelivery.product.entity;
 
 import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
+import com.sparta.easydelivery.product.dto.ProductUpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class Product extends TimeStamp {
         this.productDetails = requestDto.getProductDetails();
     }
 
-    public void update(ProductRequestDto requestDto) {
+    public void update(ProductUpdateRequestDto requestDto) {
         this.category = requestDto.getCategory();
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();

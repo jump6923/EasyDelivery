@@ -1,7 +1,8 @@
 package com.sparta.easydelivery.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.easydelivery.common.StatusResponseDto;
+import com.sparta.easydelivery.global_exception.ErrorCode;
+import com.sparta.easydelivery.global_exception.ErrorResponseDto;
 import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -39,9 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(tokenValue)){
             if(!jwtUtil.validateToken(tokenValue)){
-                String message = "토큰이 유효하지 않습니다.";
-                response.setStatus(400);
-                String json = ob.writeValueAsString(new StatusResponseDto(message, response.getStatus()));
+                String json = ob.writeValueAsString(new ErrorResponseDto(ErrorCode.INVALID_TOKEN, ErrorCode.INVALID_TOKEN.getMessage()));
                 PrintWriter writer = response.getWriter();
                 writer.println(json);
                 return;

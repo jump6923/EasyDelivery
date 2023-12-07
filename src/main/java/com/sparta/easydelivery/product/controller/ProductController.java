@@ -2,6 +2,7 @@ package com.sparta.easydelivery.product.controller;
 
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
+import com.sparta.easydelivery.product.dto.ProductUpdateRequestDto;
 import com.sparta.easydelivery.product.productservice.ProductService;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.implement.UserDetailsImpl;
@@ -56,7 +57,7 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable Long productId,
-        @Valid @RequestBody ProductRequestDto requestDto,
+        @Valid @RequestBody ProductUpdateRequestDto requestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ProductResponseDto responseDto = productService.updateProduct(productId, requestDto, userDetails.getUser());

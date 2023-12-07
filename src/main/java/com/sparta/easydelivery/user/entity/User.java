@@ -55,7 +55,7 @@ public class User {
         }
 
         if (requestDto.getAddress() != null) {
-            this.introduce = requestDto.getAddress();
+            this.address = requestDto.getAddress();
         }
     }
 

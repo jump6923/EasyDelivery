@@ -3,8 +3,8 @@ package com.sparta.easydelivery.order.exception;
 import com.sparta.easydelivery.global_exception.DomainException;
 import com.sparta.easydelivery.global_exception.ErrorCode;
 
-public class NotFoundOrderException extends DomainException {
-    public NotFoundOrderException(){
-        super(ErrorCode.NOT_FOUND_ORDER, ErrorCode.NOT_FOUND_ORDER.getMessage());
+public class EmptyCartException extends DomainException {
+    public EmptyCartException(){
+        super(ErrorCode.EMPTY_CART, ErrorCode.EMPTY_CART.getMessage());
     }
 }

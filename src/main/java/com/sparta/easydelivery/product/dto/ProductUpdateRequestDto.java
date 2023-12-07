@@ -3,8 +3,7 @@ package com.sparta.easydelivery.product.dto;
 import lombok.Getter;
 
 @Getter
-public class ProductRequestDto {
-
+public class ProductUpdateRequestDto {
     private String category;
 
     private String name;
@@ -12,4 +11,5 @@ public class ProductRequestDto {
     private Long price;
 
     private String productDetails;
+
 }
