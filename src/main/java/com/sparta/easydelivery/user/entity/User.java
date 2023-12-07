@@ -61,8 +61,4 @@ public class User {
             this.introduce = requestDto.getAddress();
         }
     }
-
-    public boolean getBlocked() { //왜 @Getter가 안먹힐까요?
-        return blocked;
-    }
 }

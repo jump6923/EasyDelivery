@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -57,7 +59,20 @@ public class UserController {
 
     @PatchMapping("/admin/block")
     public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requestDto,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ResponseEntity.ok(userService.blockedChangeUser(requestDto,userDetails.getUser().getId()));
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.blockedChangeUser(requestDto, userDetails.getUser().getId()));
     }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<UserResponseDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<UserResponseDto> responseDto = userService.getUserList(userDetails.getUser().getId());
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/admin/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable Long userId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.getUser(userId, userDetails.getUser().getId()));
+    }
+
 }

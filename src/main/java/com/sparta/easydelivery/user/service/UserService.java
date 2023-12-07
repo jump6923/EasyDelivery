@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -105,13 +107,13 @@ public class UserService {
 
     @Transactional
     public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
-        User user = findUser(id);
-        isAdminOrException(user); //관리자 체크
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
         boolean resultBlocked;
 
         String username = requestDto.getUsername();
         Optional<User> checkUsername = userRepository.findByUsername(username);
-        if (checkUsername.get().getBlocked()) { //blocked이 이미 true이면 //근데 왜 @Getter 안먹힘?
+        if (checkUsername.get().isBlocked()) {
             checkUsername.get().setBlocked(false);
             resultBlocked = false;
         } else {
@@ -119,5 +121,34 @@ public class UserService {
             resultBlocked = true;
         }
         return new BlockResponseDto(resultBlocked);
+    }
+
+//    public List<User> getUserList(Long id){
+//        User admin = findUser(id);
+//        isAdminOrException(admin); //관리자 체크
+//
+//        return userRepository.findAllUser();
+//    }
+
+    public List<UserResponseDto> getUserList(Long id) {
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+
+        List<User> userList = userRepository.findAll();
+        List<UserResponseDto> responseDto = new ArrayList<>();
+
+        for (User user : userList) {
+            responseDto.add(new UserResponseDto(user));
+        }
+        return responseDto;
+    }
+
+    public UserResponseDto getUser(Long userId, Long id) {
+        User admin = findUser(id);
+        isAdminOrException(admin); //관리자 체크
+
+        Optional<User> user = userRepository.findById(userId);
+
+        return new UserResponseDto(user.get());
     }
 }
