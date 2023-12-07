@@ -1,8 +1,10 @@
 package com.sparta.easydelivery.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.implement.UserDetailsImpl;
+import com.sparta.easydelivery.user.service.KakaoService;
 import com.sparta.easydelivery.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ import java.util.List;
 public class UserController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final KakaoService kakaoService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
@@ -79,6 +82,15 @@ public class UserController {
     public ResponseEntity<?> toggleRole(@RequestBody RoleRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.ok(userService.changeRole(requestDto, userDetails.getUser().getId()));
+    }
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<?> kakaoLogin(String code, HttpServletResponse response)
+        throws JsonProcessingException {
+
+        String token = kakaoService.kakaoLogin(code);
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        return ResponseEntity.ok().build();
     }
 
 }

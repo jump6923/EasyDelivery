@@ -38,6 +38,8 @@ public class User {
     @Column(nullable = false)
     private boolean blocked;
 
+    private Long kakaoId;
+
     public User(String username, String password, String email, String introduce, String address, UserRoleEnum role, boolean blocked) {
         this.username = username;
         this.password = password;
@@ -60,5 +62,23 @@ public class User {
         if (requestDto.getAddress() != null) {
             this.address = requestDto.getAddress();
         }
+    }
+
+    private User(String username, String password, String email, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+        this.role = UserRoleEnum.USER;
+    }
+
+    public static User kakaoSignup(
+        String username, String password, String email, Long kakaoId) {
+
+        return new User(username, password, email, kakaoId);
+    }
+
+    public void kakaoIntegration(Long kakaoId) {
+        this.kakaoId = kakaoId;
     }
 }
