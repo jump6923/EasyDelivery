@@ -4,6 +4,7 @@ import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
+import com.sparta.easydelivery.user.exception.BlockedUserException;
 import com.sparta.easydelivery.user.exception.DuplicatedUsernameException;
 import com.sparta.easydelivery.user.exception.InvalidPasswordException;
 import com.sparta.easydelivery.user.exception.InvalidTokenException;
@@ -68,7 +69,7 @@ public class UserService {
         }
 
         if(user.isBlocked()){
-            throw new IllegalArgumentException("차단된 유저 입니다.");
+            throw new BlockedUserException();
         }
     }
 

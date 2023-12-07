@@ -23,6 +23,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "invalid.password"),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "invalid.token"),
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "duplicated.username"),
+    BLOCKED_USER(HttpStatus.FORBIDDEN, "blocked.user"),
 
     /* PRODUCT */
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "not.found.product"),
