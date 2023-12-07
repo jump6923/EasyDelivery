@@ -66,6 +66,6 @@ public class CartService {
     }
 
     public List<Cart> getCartList(User user){  //List<Cart>가 주문 도메인에서 필요해서 추가
-        return cartRepository.findAllByUser(user);
+        return cartRepository.findAllFetchByUser(user);
     }
 }
