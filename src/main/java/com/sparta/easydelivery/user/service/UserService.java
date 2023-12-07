@@ -99,10 +99,6 @@ public class UserService {
 
     }
 
-    public User findUser(Long id) {
-        return userRepository.findById(id).orElseThrow(NotFoundUserException::new);
-    }
-
     public void isAdminOrException(User user) {
         if (user.getRole() != UserRoleEnum.ADMIN) {
             throw new UnauthorizedUserException();
@@ -114,8 +110,7 @@ public class UserService {
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
 
-        String username = requestDto.getUsername();
-        User checkUsername = userRepository.findByUsername(username).get();
+        User checkUsername = findUser(requestDto.getUserId());
         boolean resultBlocked = checkUsername.changeAccess();
 
         return new BlockResponseDto(resultBlocked);
@@ -147,13 +142,15 @@ public class UserService {
     public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
-        UserRoleEnum userRoleEnum;
 
-        String username = requestDto.getUsername();
-        User checkUsername = userRepository.findByUsername(username).get();
+        User checkUsername = findUser(requestDto.getUserId());
 
-        userRoleEnum = checkUsername.changeRole();
+        UserRoleEnum userRoleEnum = checkUsername.changeRole();
 
         return new RoleResponseDto(userRoleEnum);
+    }
+
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(NotFoundUserException::new);
     }
 }
