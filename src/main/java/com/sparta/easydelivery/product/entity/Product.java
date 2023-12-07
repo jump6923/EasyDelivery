@@ -42,6 +42,13 @@ public class Product extends TimeStamp {
         this.productDetails = requestDto.getProductDetails();
     }
 
+    public Product(String category, String name, Long price, String productDetails) {
+        this.category = category;
+        this.name = name;
+        this.price = price;
+        this.productDetails = productDetails;
+    }
+
     public void update(ProductRequestDto requestDto) {
         this.category = requestDto.getCategory();
         this.name = requestDto.getName();

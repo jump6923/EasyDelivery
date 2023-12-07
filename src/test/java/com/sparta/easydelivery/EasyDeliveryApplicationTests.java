@@ -8,6 +8,7 @@ class EasyDeliveryApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
