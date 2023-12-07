@@ -2,12 +2,13 @@ package com.sparta.easydelivery.user.entity;
 
 import com.sparta.easydelivery.user.dto.IntroduceRequestDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User {
     @Id
