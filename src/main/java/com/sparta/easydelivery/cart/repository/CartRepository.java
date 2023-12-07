@@ -12,12 +12,16 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Boolean existsByUserAndProduct(User user, Product product);
 
-    List<Cart> findAllByUser(User user);
-
     /**
      * deleteAllByUser 를 사용하게 되면 cart의 개수만큼 쿼리가 나가서 jpql 을 사용
      */
     @Modifying // select 외의 쿼리를 사용하기 위해서 필요함
     @Query(value = "delete from Cart c where c.user = :user")
     void clearCartByUser(User user);
+
+    /**
+     * N+1 문제가 발생하여 fetch join 사용해서 해결
+     */
+    @Query(value = "select c from Cart c join fetch c.product p where c.user = :user")
+    List<Cart> findAllFetchByUser(User user);
 }
