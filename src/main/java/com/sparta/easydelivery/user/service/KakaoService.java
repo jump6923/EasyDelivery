@@ -109,24 +109,25 @@ public class KakaoService {
     }
 
     private User accountIntegrationOrSignupOrLogin(KaKaoUser kaKaoUserInfo) {
-        User user = userRepository.findByKakaoId(kaKaoUserInfo.getId()).orElse(null);
-        if (user == null) {
-            if (user == null) {
-                if (!userRepository.existsByEmail(kaKaoUserInfo.getEmail())) {
-                    // 기존 이메일중에 카카오 이메일과 같은 게 없으면 새로 회원가입
-                    String username = UUID.randomUUID().toString();
-                    String password = passwordEncoder.encode(UUID.randomUUID().toString());
-                    String email = kaKaoUserInfo.getEmail();
-                    Long kakaoId = kaKaoUserInfo.getId();
-                    user = User.kakaoSignup(username, password, email, kakaoId);
-                } else {
-                    // 같은 이메일이 있으면 계정 통합
-                    user.kakaoIntegration(kaKaoUserInfo.getId());
-                }
+        User kakaoUser = userRepository.findByKakaoId(kaKaoUserInfo.getId()).orElse(null);
+        if (kakaoUser == null) {
+            User sameEmailUser = userRepository.findByEmail(kaKaoUserInfo.getEmail())
+                .orElse(null);
+            if (sameEmailUser == null) {
+                // 기존 이메일중에 카카오 이메일과 같은 게 없으면 새로 회원가입
+                String username = UUID.randomUUID().toString();
+                String password = passwordEncoder.encode(UUID.randomUUID().toString());
+                String email = kaKaoUserInfo.getEmail();
+                Long kakaoId = kaKaoUserInfo.getId();
+                kakaoUser = User.kakaoSignup(username, password, email, kakaoId);
+            } else {
+                // 같은 이메일이 있으면 계정 통합
+                kakaoUser = sameEmailUser;
+                kakaoUser.kakaoIntegration(kaKaoUserInfo.getId());
             }
-            userRepository.save(user);
+            userRepository.save(kakaoUser);
         }
-        return user;
+        return kakaoUser;
     }
 
 }
