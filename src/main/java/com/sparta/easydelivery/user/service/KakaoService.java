@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
-import com.sparta.easydelivery.user.dto.KaKaoUser;
+import com.sparta.easydelivery.user.dto.KaKaoUserDto;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.repository.UserRepository;
 import java.net.URI;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
@@ -44,9 +43,9 @@ public class KakaoService {
     public String kakaoLogin(String code) throws JsonProcessingException {
         String token = getToken(code);
 
-        KaKaoUser kaKaoUserInfo = getKakaoUserInfo(token);
+        KaKaoUserDto kaKaoUserDtoInfo = getKakaoUserInfo(token);
 
-        User kakaoUser = accountIntegrationOrSignupOrLogin(kaKaoUserInfo);
+        User kakaoUser = accountIntegrationOrSignupOrLogin(kaKaoUserDtoInfo);
 
         return jwtUtil.createToken(kakaoUser.getUsername());
     }
@@ -79,7 +78,7 @@ public class KakaoService {
         return objectMapper.readTree(response.getBody()).get("access_token").asText();
     }
 
-    private KaKaoUser getKakaoUserInfo(String token) throws JsonProcessingException {
+    private KaKaoUserDto getKakaoUserInfo(String token) throws JsonProcessingException {
         URI uri = UriComponentsBuilder
             .fromUriString("https://kapi.kakao.com")
             .path("/v2/user/me")
@@ -105,25 +104,25 @@ public class KakaoService {
             email = jsonNode.get("kakao_account").get("email").asText();
         }
 
-        return new KaKaoUser(kakaoId, email);
+        return new KaKaoUserDto(kakaoId, email);
     }
 
-    private User accountIntegrationOrSignupOrLogin(KaKaoUser kaKaoUserInfo) {
-        User kakaoUser = userRepository.findByKakaoId(kaKaoUserInfo.getId()).orElse(null);
+    private User accountIntegrationOrSignupOrLogin(KaKaoUserDto kaKaoUserDtoInfo) {
+        User kakaoUser = userRepository.findByKakaoId(kaKaoUserDtoInfo.getId()).orElse(null);
         if (kakaoUser == null) {
-            User sameEmailUser = userRepository.findByEmail(kaKaoUserInfo.getEmail())
+            User sameEmailUser = userRepository.findByEmail(kaKaoUserDtoInfo.getEmail())
                 .orElse(null);
             if (sameEmailUser == null) {
                 // 기존 이메일중에 카카오 이메일과 같은 게 없으면 새로 회원가입
                 String username = UUID.randomUUID().toString();
                 String password = passwordEncoder.encode(UUID.randomUUID().toString());
-                String email = kaKaoUserInfo.getEmail();
-                Long kakaoId = kaKaoUserInfo.getId();
+                String email = kaKaoUserDtoInfo.getEmail();
+                Long kakaoId = kaKaoUserDtoInfo.getId();
                 kakaoUser = User.kakaoSignup(username, password, email, kakaoId);
             } else {
                 // 같은 이메일이 있으면 계정 통합
                 kakaoUser = sameEmailUser;
-                kakaoUser.kakaoIntegration(kaKaoUserInfo.getId());
+                kakaoUser.kakaoIntegration(kaKaoUserDtoInfo.getId());
             }
             userRepository.save(kakaoUser);
         }
