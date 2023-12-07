@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class NotFoundOrderException extends DomainException {
     public NotFoundOrderException(){
-        super(ErrorCode.NOT_FOUND_ORDER, ErrorCode.NOT_FOUND_ORDER.getMessage());
+        super(ErrorCode.NOT_FOUND_ORDER.getCode().value(), ErrorCode.NOT_FOUND_ORDER.getMessage());
     }
 }

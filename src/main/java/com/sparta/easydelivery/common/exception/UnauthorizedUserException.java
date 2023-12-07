@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class UnauthorizedUserException extends DomainException {
     public UnauthorizedUserException(){
-        super(ErrorCode.UNAUTHORIZED_USER, ErrorCode.UNAUTHORIZED_USER.getMessage());
+        super(ErrorCode.UNAUTHORIZED_USER.getCode().value(), ErrorCode.UNAUTHORIZED_USER.getMessage());
     }
 }

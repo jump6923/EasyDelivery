@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class NotFoundUserException extends DomainException {
     public NotFoundUserException(){
-        super(ErrorCode.NOT_FOUND_USER, ErrorCode.NOT_FOUND_USER.getMessage());
+        super(ErrorCode.NOT_FOUND_USER.getCode().value(), ErrorCode.NOT_FOUND_USER.getMessage());
     }
 }

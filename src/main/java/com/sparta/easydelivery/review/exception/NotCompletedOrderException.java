@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class NotCompletedOrderException extends DomainException {
     public NotCompletedOrderException(){
-        super(ErrorCode.NOT_COMPLETED_ORDER, ErrorCode.NOT_COMPLETED_ORDER.getMessage());
+        super(ErrorCode.NOT_COMPLETED_ORDER.getCode().value(), ErrorCode.NOT_COMPLETED_ORDER.getMessage());
     }
 }

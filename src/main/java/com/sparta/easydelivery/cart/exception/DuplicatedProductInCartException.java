@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class DuplicatedProductInCartException extends DomainException {
     public DuplicatedProductInCartException(){
-        super(ErrorCode.DUPLICATED_PRODUCT_IN_CART, ErrorCode.DUPLICATED_PRODUCT_IN_CART.getMessage());
+        super(ErrorCode.DUPLICATED_PRODUCT_IN_CART.getCode().value(), ErrorCode.DUPLICATED_PRODUCT_IN_CART.getMessage());
     }
 }

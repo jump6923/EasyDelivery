@@ -5,6 +5,6 @@ import com.sparta.easydelivery.global_exception.ErrorCode;
 
 public class InvalidTokenException extends DomainException {
     public InvalidTokenException(){
-        super(ErrorCode.INVALID_TOKEN, ErrorCode.INVALID_TOKEN.getMessage());
+        super(ErrorCode.INVALID_TOKEN.getCode().value(), ErrorCode.INVALID_TOKEN.getMessage());
     }
 }

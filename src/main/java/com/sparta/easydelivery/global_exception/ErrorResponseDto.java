@@ -13,7 +13,7 @@ public class ErrorResponseDto {
     }
 
     public ErrorResponseDto(DomainException domainException){
-        this.statusCode = domainException.getErrorCode().getCode().value();
+        this.statusCode = domainException.getErrorCode();
         this.message = domainException.getMessage();
     }
 }

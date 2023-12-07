@@ -6,6 +6,6 @@ import org.springframework.jmx.access.InvalidInvocationException;
 
 public class InvalidPasswordException extends DomainException {
     public InvalidPasswordException(){
-        super(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage());
+        super(ErrorCode.INVALID_PASSWORD.getCode().value(), ErrorCode.INVALID_PASSWORD.getMessage());
     }
 }
