@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RoleRequestDto {
-    private String username;
+    private Long userId;
 }
