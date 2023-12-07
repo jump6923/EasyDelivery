@@ -40,6 +40,8 @@ public class User {
 
     private Long kakaoId;
 
+    private String naverId;
+
     public User(String username, String password, String email, String introduce, String address, UserRoleEnum role, boolean blocked) {
         this.username = username;
         this.password = password;
@@ -72,13 +74,30 @@ public class User {
         this.role = UserRoleEnum.USER;
     }
 
+    private User(String username, String password, String email, String naverId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.naverId = naverId;
+        this.role = UserRoleEnum.USER;
+    }
+
     public static User kakaoSignup(
         String username, String password, String email, Long kakaoId) {
 
         return new User(username, password, email, kakaoId);
     }
+    public static User naverSignup(
+        String username, String password, String email, String naverId) {
+
+        return new User(username, password, email, naverId);
+    }
 
     public void kakaoIntegration(Long kakaoId) {
         this.kakaoId = kakaoId;
+    }
+
+    public void naverIntegration(String naverId) {
+        this.naverId = naverId;
     }
 }
