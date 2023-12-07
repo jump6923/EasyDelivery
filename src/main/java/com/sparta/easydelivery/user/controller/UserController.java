@@ -5,6 +5,7 @@ import com.sparta.easydelivery.security.jwt.JwtUtil;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.implement.UserDetailsImpl;
 import com.sparta.easydelivery.user.service.KakaoService;
+import com.sparta.easydelivery.user.service.NaverService;
 import com.sparta.easydelivery.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final NaverService naverService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
@@ -89,7 +91,16 @@ public class UserController {
         throws JsonProcessingException {
 
         String token = kakaoService.kakaoLogin(code);
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/naver/callback")
+    public ResponseEntity<?> naverLogin(String code, HttpServletResponse response)
+        throws JsonProcessingException {
+
+        String token = naverService.naverLogin(code);
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         return ResponseEntity.ok().build();
     }
 
