@@ -51,12 +51,7 @@ public class KakaoService {
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        URI uri = UriComponentsBuilder
-            .fromUriString("https://kauth.kakao.com")
-            .path("/oauth/token")
-            .encode()
-            .build()
-            .toUri();
+        URI uri = getUri("https://kauth.kakao.com", "/oauth/token");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -68,10 +63,7 @@ public class KakaoService {
         body.add("redirect_uri", "http://localhost:8080/api/users/kakao/callback");
         body.add("code", code);
 
-        RequestEntity<MultiValueMap<String, String>> request = RequestEntity
-            .post(uri)
-            .headers(headers)
-            .body(body);
+        RequestEntity<MultiValueMap<String, String>> request = getRequestEntity(uri, headers, body);
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
@@ -79,21 +71,14 @@ public class KakaoService {
     }
 
     private KaKaoUserDto getKakaoUserInfo(String token) throws JsonProcessingException {
-        URI uri = UriComponentsBuilder
-            .fromUriString("https://kapi.kakao.com")
-            .path("/v2/user/me")
-            .encode()
-            .build()
-            .toUri();
+        URI uri = getUri("https://kapi.kakao.com", "/v2/user/me");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        RequestEntity<LinkedMultiValueMap<Object, Object>> request = RequestEntity
-            .post(uri)
-            .headers(headers)
-            .body(new LinkedMultiValueMap<>());
+        RequestEntity<MultiValueMap<String, String>> request =
+            getRequestEntity(uri, headers, new LinkedMultiValueMap<>());
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
 
@@ -127,6 +112,26 @@ public class KakaoService {
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
+    }
+
+    private static URI getUri(String url, String path) {
+        URI uri = UriComponentsBuilder
+            .fromUriString(url)
+            .path(path)
+            .encode()
+            .build()
+            .toUri();
+        return uri;
+    }
+
+    private RequestEntity<MultiValueMap<String, String>> getRequestEntity(
+        URI uri, HttpHeaders headers, MultiValueMap<String, String> body) {
+
+        RequestEntity<MultiValueMap<String, String>> request = RequestEntity
+            .post(uri)
+            .headers(headers)
+            .body(body);
+        return request;
     }
 
 }

@@ -46,25 +46,16 @@ public class NaverService {
     }
 
     private String getToken(String code) throws JsonProcessingException {
-        URI uri = UriComponentsBuilder
-            .fromUriString("https://nid.naver.com")
-            .path("/oauth2.0/token")
-            .encode()
-            .build()
-            .toUri();
+        URI uri = getUri("https://nid.naver.com", "/oauth2.0/token");
 
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add();
-
-        MultiValueMap<Object, Object> body = new LinkedMultiValueMap<>();
-
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
         body.add("code", code);
         body.add("state", "test");
 
-        RequestEntity<MultiValueMap<Object, Object>> request = RequestEntity.post(uri)
+        RequestEntity<MultiValueMap<String, String>> request = RequestEntity.post(uri)
             .body(body);
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
@@ -72,17 +63,12 @@ public class NaverService {
     }
 
     private NaverUserDto getNaverUserInfo(String token) throws JsonProcessingException {
-        URI uri = UriComponentsBuilder
-            .fromUriString("https://openapi.naver.com")
-            .path("/v1/nid/me")
-            .encode()
-            .build()
-            .toUri();
+        URI uri = getUri("https://openapi.naver.com", "/v1/nid/me");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
 
-        RequestEntity<MultiValueMap<Object, Object>> request = RequestEntity.post(uri)
+        RequestEntity<MultiValueMap<String, String>> request = RequestEntity.post(uri)
             .headers(headers).body(new LinkedMultiValueMap<>());
 
         ResponseEntity<String> response = restTemplate.exchange(request, String.class);
@@ -102,17 +88,33 @@ public class NaverService {
             User sameEmailuser = userRepository.findByEmail(naverUserDtoInfo.getEmail())
                 .orElse(null);
             if (sameEmailuser == null) {
-                String username = UUID.randomUUID().toString();
-                String password = passwordEncoder.encode(UUID.randomUUID().toString());
-                String email = naverUserDtoInfo.getEmail();
-                String naverId = naverUserDtoInfo.getId();
-                naverUser = User.naverSignup(username, password, email, naverId);
+                naverUser = signup(naverUserDtoInfo);
             } else {
                 naverUser = sameEmailuser;
                 naverUser.naverIntegration(naverUserDtoInfo.getId());
             }
             userRepository.save(naverUser);
         }
+        return naverUser;
+    }
+
+    private static URI getUri(String url, String path) {
+        URI uri = UriComponentsBuilder
+            .fromUriString(url)
+            .path(path)
+            .encode()
+            .build()
+            .toUri();
+        return uri;
+    }
+
+    private User signup(NaverUserDto naverUserDtoInfo) {
+        User naverUser;
+        String username = UUID.randomUUID().toString();
+        String password = passwordEncoder.encode(UUID.randomUUID().toString());
+        String email = naverUserDtoInfo.getEmail();
+        String naverId = naverUserDtoInfo.getId();
+        naverUser = User.naverSignup(username, password, email, naverId);
         return naverUser;
     }
 }
