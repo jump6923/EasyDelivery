@@ -62,7 +62,7 @@ public class ReviewController {
     }
 
     /**
-     * sortBy = createAt or star
+     * sortBy = createdAt or star
      */
     @GetMapping("")
     @Valid
@@ -77,7 +77,7 @@ public class ReviewController {
             throw new IllegalArgumentException("flag 값은 'true' 또는 'false'를 입력해 주세요");
         }
 
-        if (!sortBy.equals("createAt") && !sortBy.equals("star")) {
+        if (!sortBy.equals("createdAt") && !sortBy.equals("star")) {
             throw new IllegalArgumentException("정렬 방식은 'createAt' 또는 'star'만 가능합니다.");
         }
 
