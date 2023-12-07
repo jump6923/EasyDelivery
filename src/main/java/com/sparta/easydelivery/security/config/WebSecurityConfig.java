@@ -1,8 +1,10 @@
 package com.sparta.easydelivery.security.config;
 
+import com.sparta.easydelivery.security.ExceptionHandleFilter;
 import com.sparta.easydelivery.security.jwt.JwtAuthorizationFilter;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
 import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +44,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public ExceptionHandleFilter ExceptionHandleFilter() {
+        return new ExceptionHandleFilter();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf((csrf) -> csrf.disable());
 
@@ -58,6 +65,7 @@ public class WebSecurityConfig {
         );
 
         httpSecurity.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(ExceptionHandleFilter(), JwtAuthorizationFilter.class);
 
         return httpSecurity.build();
     }

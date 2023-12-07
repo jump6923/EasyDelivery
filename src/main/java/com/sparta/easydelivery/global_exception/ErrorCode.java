@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
+    /* FILTER */
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+
     /* COMMON */
     UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     INVALIDATE_INPUT(HttpStatus.BAD_REQUEST, "입력 형식에 맞지 않습니다."),
