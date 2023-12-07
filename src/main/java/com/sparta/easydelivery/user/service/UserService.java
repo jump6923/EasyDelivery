@@ -92,7 +92,7 @@ public class UserService {
         User changeUser = findUser(id);
 
         if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
-            changeUser.setPassword(passwordEncoder.encode(requestDto.getChangePassword()));
+            changeUser.changePassword(passwordEncoder.encode(requestDto.getChangePassword()));
         } else {
             throw new InvalidPasswordException();
         }
@@ -113,17 +113,11 @@ public class UserService {
     public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
-        boolean resultBlocked;
 
         String username = requestDto.getUsername();
-        Optional<User> checkUsername = userRepository.findByUsername(username);
-        if (checkUsername.get().isBlocked()) {
-            checkUsername.get().setBlocked(false);
-            resultBlocked = false;
-        } else {
-            checkUsername.get().setBlocked(true);
-            resultBlocked = true;
-        }
+        User checkUsername = userRepository.findByUsername(username).get();
+        boolean resultBlocked = checkUsername.changeAccess();
+
         return new BlockResponseDto(resultBlocked);
     }
 
@@ -156,15 +150,10 @@ public class UserService {
         UserRoleEnum userRoleEnum;
 
         String username = requestDto.getUsername();
-        Optional<User> checkUsername = userRepository.findByUsername(username);
+        User checkUsername = userRepository.findByUsername(username).get();
 
-        if (checkUsername.get().getRole()==UserRoleEnum.ADMIN) {
-            checkUsername.get().setRole(UserRoleEnum.USER);
-            userRoleEnum = UserRoleEnum.USER;
-        } else {
-            checkUsername.get().setRole(UserRoleEnum.ADMIN);
-            userRoleEnum = UserRoleEnum.ADMIN;
-        }
+        userRoleEnum = checkUsername.changeRole();
+
         return new RoleResponseDto(userRoleEnum);
     }
 }
