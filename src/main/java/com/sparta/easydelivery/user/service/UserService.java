@@ -56,6 +56,7 @@ public class UserService {
 
         User user = new User(username, password, email, introduce, address, role, blocked);
         userRepository.save(user);
+        passwordHistoryRepository.save(new PasswordHistory(user,password));
     }
 
     public void login(LoginRequestDto userRequestDto) {
