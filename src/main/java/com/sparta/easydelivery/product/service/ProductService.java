@@ -1,4 +1,4 @@
-package com.sparta.easydelivery.product.productservice;
+package com.sparta.easydelivery.product.service;
 
 import com.sparta.easydelivery.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.product.dto.ProductResponseDto;
