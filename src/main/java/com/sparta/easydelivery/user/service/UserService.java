@@ -109,11 +109,8 @@ public class UserService {
     public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
-
         User checkUsername = findUser(requestDto.getUserId());
-        boolean resultBlocked = checkUsername.changeAccess();
-
-        return new BlockResponseDto(resultBlocked);
+        return new BlockResponseDto(checkUsername.changeAccess());
     }
 
     public List<UserResponseDto> getUserList(Long id) {
@@ -142,12 +139,8 @@ public class UserService {
     public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
         User admin = findUser(id);
         isAdminOrException(admin); //관리자 체크
-
         User checkUsername = findUser(requestDto.getUserId());
-
-        UserRoleEnum userRoleEnum = checkUsername.changeRole();
-
-        return new RoleResponseDto(userRoleEnum);
+        return new RoleResponseDto(checkUsername.changeRole());
     }
 
     public User findUser(Long id) {
