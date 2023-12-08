@@ -22,7 +22,6 @@ public class ProductService {
     private final UserService userService;
 
     public ProductResponseDto addProduct(ProductRequestDto requestDto, User user) {
-        userService.isAdminOrException(user);
         Product product = new Product(requestDto);
         Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(saveProduct);
@@ -44,13 +43,11 @@ public class ProductService {
     @Transactional
     public ProductResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, User user) {
         Product product = getProductById(productId);
-        userService.isAdminOrException(user);
         product.update(requestDto);
         return new ProductResponseDto(product);
     }
 
     public void deleteProduct(Long productId, User user) {
-        userService.isAdminOrException(user);
         Product product = getProductById(productId);
         productRepository.delete(product);
     }

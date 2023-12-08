@@ -116,23 +116,13 @@ public class UserService {
         passwordHistoryRepository.save(passwordHistory);
     }
 
-    public void isAdminOrException(User user) {
-        if (user.getRole() != UserRoleEnum.ADMIN) {
-            throw new UnauthorizedUserException();
-        }
-    }
-
     @Transactional
     public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
         User checkUsername = findUser(requestDto.getUserId());
         return new BlockResponseDto(checkUsername.changeAccess());
     }
 
     public List<UserResponseDto> getUserList(Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
 
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> responseDto = new ArrayList<>();
@@ -144,9 +134,6 @@ public class UserService {
     }
 
     public UserResponseDto getUser(Long userId, Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
-
         Optional<User> user = userRepository.findById(userId);
 
         return new UserResponseDto(user.get());
@@ -154,8 +141,6 @@ public class UserService {
 
     @Transactional
     public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
         User checkUsername = findUser(requestDto.getUserId());
         return new RoleResponseDto(checkUsername.changeRole());
     }

@@ -75,7 +75,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderStatusRequestDto requestDto, User user){
-        userService.isAdminOrException(user);
         Order order = getOrderEntity(orderId, user);
         order.setStatus(requestDto.getOrderStatusEnum());
         return new OrderResponseDto(order);

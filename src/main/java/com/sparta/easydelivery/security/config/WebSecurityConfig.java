@@ -4,6 +4,7 @@ import static com.sparta.easydelivery.user.entity.UserRoleEnum.*;
 import static org.springframework.http.HttpMethod.*;
 
 import com.sparta.easydelivery.security.ExceptionHandleFilter;
+import com.sparta.easydelivery.security.exception.CustomAccessDeniedException;
 import com.sparta.easydelivery.security.jwt.JwtAuthorizationFilter;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
@@ -72,6 +73,10 @@ public class WebSecurityConfig {
                             .hasAuthority(USER.getAuthority())
                         .requestMatchers(POST, "/api/reviews/**")
                             .hasAuthority(USER.getAuthority()) // 리뷰 수정과 등록은 USER만 가능하다
+                        .requestMatchers("/api/products/**")
+                            .hasAuthority(ADMIN.getAuthority()) // 상품 조회 제외 기능은 ADMIN만 가능하다 (조회는 위에서 처리)
+                        .requestMatchers("/api/admin/**")
+                            .hasAuthority(ADMIN.getAuthority()) // 유저 관리 기능은 ADMIN만 가능하다.
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
