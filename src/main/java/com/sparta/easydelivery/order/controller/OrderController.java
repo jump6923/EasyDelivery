@@ -1,5 +1,6 @@
 package com.sparta.easydelivery.order.controller;
 
+import com.sparta.easydelivery.order.dto.OrderDetailResponseDto;
 import com.sparta.easydelivery.order.dto.OrderMapResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
@@ -46,11 +47,11 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponseDto> getOrder(
+    public ResponseEntity<OrderDetailResponseDto> getOrder(
         @PathVariable Long orderId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        OrderResponseDto responseDto = orderService.getOrder(orderId, userDetails.getUser());
+        OrderDetailResponseDto responseDto = orderService.getOrder(orderId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 

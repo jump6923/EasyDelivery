@@ -3,6 +3,7 @@ package com.sparta.easydelivery.order.service;
 import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.cart.service.CartService;
 import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
+import com.sparta.easydelivery.order.dto.OrderDetailResponseDto;
 import com.sparta.easydelivery.order.dto.OrderMapResponseDto;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.order.dto.OrderResponseDto;
@@ -67,9 +68,9 @@ public class OrderService {
         return orderMap;
     }
 
-    public OrderResponseDto getOrder(Long orderId, User user){
+    public OrderDetailResponseDto getOrder(Long orderId, User user){
         Order order = getOrderEntity(orderId, user);
-        return new OrderResponseDto(order);
+        return new OrderDetailResponseDto(order);
     }
 
     @Transactional

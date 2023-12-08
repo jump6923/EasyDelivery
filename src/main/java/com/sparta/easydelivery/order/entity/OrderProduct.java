@@ -47,5 +47,8 @@ public class OrderProduct extends TimeStamp {
 
     public void setOrder(Order order){
         this.order = order;
+        if(!order.getOrderProductList().contains(this)){
+            order.addOrderProduct(this);
+        }
     }
 }
