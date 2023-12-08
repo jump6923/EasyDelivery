@@ -2,14 +2,13 @@ package com.sparta.easydelivery.user.entity;
 
 import com.sparta.easydelivery.user.dto.IntroduceRequestDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User {
     @Id
@@ -22,13 +21,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
     private String email;
 
-    @Column(nullable = true)
     private String introduce;
 
-    @Column(nullable = true)
     private String address;
 
     @Column(nullable = false)
@@ -37,6 +33,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean blocked;
+
+    private Long kakaoId;
+
+    private String naverId;
 
     public User(String username, String password, String email, String introduce, String address, UserRoleEnum role, boolean blocked) {
         this.username = username;
@@ -60,5 +60,58 @@ public class User {
         if (requestDto.getAddress() != null) {
             this.address = requestDto.getAddress();
         }
+    }
+
+    private User(String username, String password, String email, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.kakaoId = kakaoId;
+        this.role = UserRoleEnum.USER;
+    }
+
+    private User(String username, String password, String email, String naverId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.naverId = naverId;
+        this.role = UserRoleEnum.USER;
+    }
+
+    public static User kakaoSignup(
+        String username, String password, String email, Long kakaoId) {
+
+        return new User(username, password, email, kakaoId);
+    }
+    public static User naverSignup(
+        String username, String password, String email, String naverId) {
+
+        return new User(username, password, email, naverId);
+    }
+
+    public void kakaoIntegration(Long kakaoId) {
+        this.kakaoId = kakaoId;
+    }
+
+    public void naverIntegration(String naverId) {
+        this.naverId = naverId;
+    }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    public boolean changeAccess() {
+        blocked = !blocked;
+        return blocked;
+    }
+
+    public UserRoleEnum changeRole() {
+        if (role == UserRoleEnum.ADMIN) {
+            role = UserRoleEnum.USER;
+            return role;
+        }
+        role = UserRoleEnum.ADMIN;
+        return role;
     }
 }

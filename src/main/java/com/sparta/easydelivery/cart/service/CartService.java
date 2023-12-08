@@ -9,7 +9,7 @@ import com.sparta.easydelivery.cart.exception.NotFoundCartException;
 import com.sparta.easydelivery.cart.repository.CartRepository;
 import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
 import com.sparta.easydelivery.product.entity.Product;
-import com.sparta.easydelivery.product.productservice.ProductService;
+import com.sparta.easydelivery.product.service.ProductService;
 import com.sparta.easydelivery.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

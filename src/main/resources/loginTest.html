@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div>
+  <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id={clientId}&redirect_uri=http://localhost:8080/api/users/kakao/callback&response_type=code'">
+    카카오로 로그인하기
+  </button>
+  https://kauth.kakao.com/oauth/authorize?client_id={clientId}&redirect_uri=http://localhost:8080/api/users/kakao/callback&response_type=code
+</div>
+
+<div>
+  <button id="login-naver-btn" onclick="location.href='https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={clientId}&redirect_uri=http://localhost:8080/api/users/naver/callback&state=test'">
+    네이버로 로그인하기
+  </button>
+  https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={clientID}&redirect_uri=http://localhost:8080/api/users/naver/callback&state=test
+</div>
+</body>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+</html>

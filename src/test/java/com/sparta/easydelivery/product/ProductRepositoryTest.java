@@ -1,6 +1,6 @@
 package com.sparta.easydelivery.product;
 
-import com.sparta.easydelivery.JpaConfig;
+import com.sparta.easydelivery.common.config.JpaConfig;
 import com.sparta.easydelivery.product.data.Salad.Salad;
 import com.sparta.easydelivery.product.data.Sandwich.Bread;
 import com.sparta.easydelivery.product.data.Sandwich.Cheese;

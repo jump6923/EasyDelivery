@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor
+@Validated
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -62,10 +64,11 @@ public class ReviewController {
     }
 
     /**
-     * sortBy = createdAt or star
+     * @RequestParam으로 받는 값의 검증을 위해서는 클래스 위에 @Validated 적용해야 함
+     * 발생하는 예외는 MethodArgumentNotValidException가 아닌
+     * ConstraintViolationException <- 이것
      */
     @GetMapping("")
-    @Valid
     public ResponseEntity<ReviewListResponseDto> getReviewList(
         @RequestParam(defaultValue = "1") @Positive(message = "페이지는 양수만 가능합니다.") int page,
         @RequestParam(defaultValue = "10") @Min(value = 10, message = "페이지당 리뷰는 최소 10입니다.")
