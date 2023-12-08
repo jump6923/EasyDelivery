@@ -117,12 +117,12 @@ public class UserService {
     }
 
     @Transactional
-    public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
+    public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto) {
         User checkUsername = findUser(requestDto.getUserId());
         return new BlockResponseDto(checkUsername.changeAccess());
     }
 
-    public List<UserResponseDto> getUserList(Long id) {
+    public List<UserResponseDto> getUserList() {
 
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> responseDto = new ArrayList<>();
@@ -133,14 +133,14 @@ public class UserService {
         return responseDto;
     }
 
-    public UserResponseDto getUser(Long userId, Long id) {
-        Optional<User> user = userRepository.findById(userId);
-
-        return new UserResponseDto(user.get());
-    }
+//    public UserResponseDto getUser(Long userId) {
+//        Optional<User> user = userRepository.findById(userId);
+//
+//        return new UserResponseDto(user);
+//    }
 
     @Transactional
-    public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
+    public RoleResponseDto changeRole(RoleRequestDto requestDto){
         User checkUsername = findUser(requestDto.getUserId());
         return new RoleResponseDto(checkUsername.changeRole());
     }

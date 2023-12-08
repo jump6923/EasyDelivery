@@ -66,6 +66,8 @@ public class WebSecurityConfig {
                         .requestMatchers(GET,"/api/reviews/**").permitAll()
                         .requestMatchers("/api/carts/**")
                             .hasAuthority(USER.getAuthority()) // 장바구니 기능은 USER만 사용 가능하다.
+                        .requestMatchers("/api/sales/**")
+                            .hasAuthority(ADMIN.getAuthority()) // 매출 관리 기능은 ADMIN 사용 가능하다.
                         .requestMatchers(POST, "/api/orders/**")
                             .hasAuthority(USER.getAuthority()) // 주문(생성)은 USER만 사용 가능하다.
                         .requestMatchers(PATCH, "/api/reviews/**")
