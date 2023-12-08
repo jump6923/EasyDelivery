@@ -3,8 +3,8 @@ package com.sparta.easydelivery.security.config;
 import com.sparta.easydelivery.security.ExceptionHandleFilter;
 import com.sparta.easydelivery.security.jwt.JwtAuthorizationFilter;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
+import com.sparta.easydelivery.user.entity.UserRoleEnum;
 import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +61,14 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/users/**").permitAll() // '/api/users/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.GET,"/api/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/reviews/**").permitAll()
+                        .requestMatchers("/api/carts/**")
+                            .hasAuthority(UserRoleEnum.USER.getAuthority()) // 장바구니 기능은 USER만 사용 가능하다.
+                        .requestMatchers(HttpMethod.POST, "/api/orders/**")
+                            .hasAuthority(UserRoleEnum.USER.getAuthority()) // 주문(생성)은 USER만 사용 가능하다.
+                        .requestMatchers(HttpMethod.PATCH, "/api/reviews/**")
+                            .hasAuthority(UserRoleEnum.USER.getAuthority())
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/**")
+                            .hasAuthority(UserRoleEnum.USER.getAuthority()) // 리뷰 수정과 등록은 USER만 가능하다
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
