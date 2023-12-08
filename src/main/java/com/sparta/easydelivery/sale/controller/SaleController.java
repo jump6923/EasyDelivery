@@ -1,10 +1,12 @@
 package com.sparta.easydelivery.sale.controller;
 
 import com.sparta.easydelivery.sale.dto.CategorySaleResponseDto;
+import com.sparta.easydelivery.sale.dto.PeriodSaleResponseDto;
 import com.sparta.easydelivery.sale.dto.ProductSaleListResponseDto;
 import com.sparta.easydelivery.sale.dto.TotalSaleResponseDto;
 import com.sparta.easydelivery.sale.service.SaleService;
 import com.sparta.easydelivery.user.implement.UserDetailsImpl;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +42,12 @@ public class SaleController {
     public ResponseEntity<ProductSaleListResponseDto> getProductSales(){
         ProductSaleListResponseDto responseDto = saleService.getProductSales();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/period") // 기간별
+    public ResponseEntity<PeriodSaleResponseDto> getPeriodSales(String sort) {
+        PeriodSaleResponseDto responseDto = saleService.getPeriodSales(sort);
+
+        return ResponseEntity.ok(responseDto);
     }
 }

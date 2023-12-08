@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.sale.service;
 
 import com.sparta.easydelivery.sale.dto.CategorySaleResponseDto;
+import com.sparta.easydelivery.sale.dto.PeriodSaleResponseDto;
 import com.sparta.easydelivery.sale.dto.ProductSaleResponseDto;
 import com.sparta.easydelivery.sale.dto.ProductSaleListResponseDto;
 import com.sparta.easydelivery.sale.dto.TotalSaleResponseDto;
@@ -10,7 +11,7 @@ import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.order.service.OrderProductService;
 import com.sparta.easydelivery.product.entity.Product;
 import com.sparta.easydelivery.product.repository.ProductRepository;
-import com.sparta.easydelivery.user.entity.User;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -72,4 +73,35 @@ public class SaleService {
        return categoryList;
     }
 
+    public PeriodSaleResponseDto getPeriodSales(String sort) {
+        LocalDateTime period = StringLocalDateTimeConvert(sort);
+        List<Order> Orders = orderRepository.findAllByCreatedAtGreaterThan(period);
+        Long sales = 0L;
+        for (Order order : Orders) {
+            sales += order.getTotalPrice();
+            System.out.println("order.getTotalPrice() = " + order.getTotalPrice());
+        }
+        return new PeriodSaleResponseDto(sort, sales);
+    }
+
+    private LocalDateTime StringLocalDateTimeConvert(String sort) {
+        LocalDateTime period;
+        switch (sort) {
+            case "day":
+                period = LocalDateTime.now().minusDays(1);
+                break;
+            case "week":
+                period = LocalDateTime.now().minusWeeks(1);
+                break;
+            case "month":
+                period = LocalDateTime.now().minusMonths(1);
+                break;
+            case "year":
+                period = LocalDateTime.now().minusYears(1);
+                break;
+            default:
+                throw new IllegalArgumentException("sort 값이 옳바르지 않습니다.");
+        }
+        return period;
+    }
 }
