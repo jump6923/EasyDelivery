@@ -1,14 +1,12 @@
 package com.sparta.easydelivery.user.service;
 
 import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
+import com.sparta.easydelivery.user.entity.PasswordHistory;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
-import com.sparta.easydelivery.user.exception.BlockedUserException;
-import com.sparta.easydelivery.user.exception.DuplicatedUsernameException;
-import com.sparta.easydelivery.user.exception.InvalidPasswordException;
-import com.sparta.easydelivery.user.exception.InvalidTokenException;
-import com.sparta.easydelivery.user.exception.NotFoundUserException;
+import com.sparta.easydelivery.user.exception.*;
+import com.sparta.easydelivery.user.repository.PasswordHistoryRepository;
 import com.sparta.easydelivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordHistoryRepository passwordHistoryRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     public void signup(SignupRequestDto requestDto) {
@@ -92,12 +91,29 @@ public class UserService {
     public void changePassword(PasswordRequestDto requestDto, Long id) {
         User changeUser = findUser(id);
 
-        if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
-            changeUser.changePassword(passwordEncoder.encode(requestDto.getChangePassword()));
-        } else {
+        List<PasswordHistory> passwordHistories = passwordHistoryRepository
+                .findAllByUserOrderByCreatedAtDesc(changeUser);
+
+        String password = changeUser.getPassword();
+        String changePassword = requestDto.getChangePassword();
+
+        if (!passwordEncoder.matches(requestDto.getOriginPassword(), password)) {
             throw new InvalidPasswordException();
         }
 
+        for (PasswordHistory passwordHistory : passwordHistories) {
+            if (passwordEncoder.matches(changePassword, passwordHistory.getPassword())) {
+                throw new IllegalArgumentException("최근 3번 이내에 변경 이력이 있는 패스워드 입니다.");
+            }
+        }
+
+        String encodePassword = passwordEncoder.encode(changePassword);
+        changeUser.changePassword(encodePassword);
+        if (passwordHistories.size() == 3) {
+            passwordHistoryRepository.delete(passwordHistories.get(2));
+        }
+        PasswordHistory passwordHistory = new PasswordHistory(changeUser, encodePassword);
+        passwordHistoryRepository.save(passwordHistory);
     }
 
     public void isAdminOrException(User user) {
