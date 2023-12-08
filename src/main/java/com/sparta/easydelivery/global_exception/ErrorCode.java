@@ -24,6 +24,8 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "invalid.token"),
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "duplicated.username"),
     BLOCKED_USER(HttpStatus.FORBIDDEN, "blocked.user"),
+    DUPLICATED_PASSWORD(HttpStatus.CONFLICT, "duplicated.password"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN,"access_denied"),
 
     /* PRODUCT */
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "not.found.product"),
@@ -41,6 +43,7 @@ public enum ErrorCode {
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "not.found.review"),
     NOT_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "not.completed.order"),
     DUPLICATED_REVIEW(HttpStatus.CONFLICT, "duplicated.review");
+
 
     private final HttpStatus code;
 

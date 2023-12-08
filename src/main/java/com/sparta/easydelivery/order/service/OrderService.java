@@ -16,7 +16,6 @@ import com.sparta.easydelivery.order.exception.NotFoundOrderException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
-import com.sparta.easydelivery.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,8 +30,6 @@ public class OrderService {
     private final OrderProductService orderProductService;
 
     private final CartService cartService;
-
-    private final UserService userService;
 
     public OrderResponseDto createOrder(OrderRequestDto requestDto, User user){
         // dto -> entity
@@ -76,7 +73,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderStatusRequestDto requestDto, User user){
-        userService.isAdminOrException(user);
         Order order = getOrderEntity(orderId, user);
         order.setStatus(requestDto.getOrderStatusEnum());
         return new OrderResponseDto(order);

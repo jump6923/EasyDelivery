@@ -63,10 +63,6 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    /**
-     * 존재하는 주문인지, 리뷰를 남기려는 사용자의 주문이 맞는지 확인하는 메소드
-     */
-
     private Review getUserReview(Long reviewId, User user) {
         Review review = reviewRepository.findById(reviewId)
             .orElseThrow(NotFoundReviewException::new);

@@ -1,14 +1,12 @@
 package com.sparta.easydelivery.user.service;
 
 import com.sparta.easydelivery.common.exception.UnauthorizedUserException;
+import com.sparta.easydelivery.user.entity.PasswordHistory;
 import com.sparta.easydelivery.user.dto.*;
 import com.sparta.easydelivery.user.entity.User;
 import com.sparta.easydelivery.user.entity.UserRoleEnum;
-import com.sparta.easydelivery.user.exception.BlockedUserException;
-import com.sparta.easydelivery.user.exception.DuplicatedUsernameException;
-import com.sparta.easydelivery.user.exception.InvalidPasswordException;
-import com.sparta.easydelivery.user.exception.InvalidTokenException;
-import com.sparta.easydelivery.user.exception.NotFoundUserException;
+import com.sparta.easydelivery.user.exception.*;
+import com.sparta.easydelivery.user.repository.PasswordHistoryRepository;
 import com.sparta.easydelivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordHistoryRepository passwordHistoryRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     public void signup(SignupRequestDto requestDto) {
@@ -56,6 +55,7 @@ public class UserService {
 
         User user = new User(username, password, email, introduce, address, role, blocked);
         userRepository.save(user);
+        passwordHistoryRepository.save(new PasswordHistory(user,password));
     }
 
     public void login(LoginRequestDto userRequestDto) {
@@ -91,31 +91,38 @@ public class UserService {
     public void changePassword(PasswordRequestDto requestDto, Long id) {
         User changeUser = findUser(id);
 
-        if (passwordEncoder.matches(requestDto.getOriginPassword(), changeUser.getPassword())) {
-            changeUser.changePassword(passwordEncoder.encode(requestDto.getChangePassword()));
-        } else {
+        List<PasswordHistory> passwordHistories = passwordHistoryRepository
+                .findAllByUserOrderByCreatedAtDesc(changeUser);
+
+        String password = changeUser.getPassword();
+        String changePassword = requestDto.getChangePassword();
+
+        if (!passwordEncoder.matches(requestDto.getOriginPassword(), password)) {
             throw new InvalidPasswordException();
         }
 
-    }
-
-    public void isAdminOrException(User user) {
-        if (user.getRole() != UserRoleEnum.ADMIN) {
-            throw new UnauthorizedUserException();
+        for (PasswordHistory passwordHistory : passwordHistories) {
+            if (passwordEncoder.matches(changePassword, passwordHistory.getPassword())) {
+                throw new DuplicatedPasswordException();
+            }
         }
+
+        String encodePassword = passwordEncoder.encode(changePassword);
+        changeUser.changePassword(encodePassword);
+        if (passwordHistories.size() == 3) {
+            passwordHistoryRepository.delete(passwordHistories.get(2));
+        }
+        PasswordHistory passwordHistory = new PasswordHistory(changeUser, encodePassword);
+        passwordHistoryRepository.save(passwordHistory);
     }
 
     @Transactional
     public BlockResponseDto blockedChangeUser(BlockRequsetDto requestDto, Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
         User checkUsername = findUser(requestDto.getUserId());
         return new BlockResponseDto(checkUsername.changeAccess());
     }
 
     public List<UserResponseDto> getUserList(Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
 
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> responseDto = new ArrayList<>();
@@ -127,9 +134,6 @@ public class UserService {
     }
 
     public UserResponseDto getUser(Long userId, Long id) {
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
-
         Optional<User> user = userRepository.findById(userId);
 
         return new UserResponseDto(user.get());
@@ -137,8 +141,6 @@ public class UserService {
 
     @Transactional
     public RoleResponseDto changeRole(RoleRequestDto requestDto, Long id){
-        User admin = findUser(id);
-        isAdminOrException(admin); //관리자 체크
         User checkUsername = findUser(requestDto.getUserId());
         return new RoleResponseDto(checkUsername.changeRole());
     }
