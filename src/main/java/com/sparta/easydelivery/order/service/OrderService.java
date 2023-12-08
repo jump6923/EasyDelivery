@@ -10,6 +10,7 @@ import com.sparta.easydelivery.order.dto.OrderResponseDto;
 import com.sparta.easydelivery.order.dto.OrderStatusRequestDto;
 import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.order.entity.OrderStatusEnum;
+import com.sparta.easydelivery.order.exception.AlreadyCompletedOrderException;
 import com.sparta.easydelivery.order.exception.EmptyCartException;
 import com.sparta.easydelivery.order.exception.NotFoundOrderException;
 import com.sparta.easydelivery.order.repository.OrderRepository;
@@ -83,6 +84,9 @@ public class OrderService {
 
     public void deleteOrder(Long orderId, User user){
         Order order = getOrderEntity(orderId, user);
+        if(order.getStatus() == OrderStatusEnum.COMPLETION){
+            throw new AlreadyCompletedOrderException();
+        }
         orderRepository.delete(order);
     }
 

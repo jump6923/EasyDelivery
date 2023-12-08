@@ -35,6 +35,7 @@ public enum ErrorCode {
     /* ORDER */
     NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "not.found.order"),
     EMPTY_CART(HttpStatus.BAD_REQUEST, "empty.cart"),
+    ALREADY_COMPLETED_ORDER(HttpStatus.BAD_REQUEST, "already.completed.order"),
 
     /* REVIEW */
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "not.found.review"),
