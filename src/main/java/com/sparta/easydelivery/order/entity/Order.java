@@ -4,6 +4,7 @@ import com.sparta.easydelivery.cart.entity.Cart;
 import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.order.dto.OrderRequestDto;
 import com.sparta.easydelivery.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +36,7 @@ public class Order extends TimeStamp {
     private String paymentMethod;
 
     @Column(nullable = false)
-    private int totalPrice=0;
+    private Long totalPrice=0L;
 
     @Column
     private String requests;
@@ -48,6 +51,9 @@ public class Order extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     User user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private final List<OrderProduct> orderProductList = new ArrayList<>();
 
     public Order(OrderRequestDto requestDto, User user) {
         this.paymentMethod = requestDto.getPaymentMethod();
@@ -68,5 +74,12 @@ public class Order extends TimeStamp {
 
     public void setStatus(OrderStatusEnum status) {
         this.status = status;
+    }
+
+    public void addOrderProduct(OrderProduct orderProduct){
+        this.orderProductList.add(orderProduct);
+        if(orderProduct.getOrder() != this){
+            orderProduct.setOrder(this);
+        }
     }
 }

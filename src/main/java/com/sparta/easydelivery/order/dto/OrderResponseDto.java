@@ -11,7 +11,7 @@ public class OrderResponseDto {
 
     private String paymentMethod;
 
-    private int totalPrice;
+    private Long totalPrice;
 
     private String requests;
 
