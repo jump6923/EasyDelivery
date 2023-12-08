@@ -99,6 +99,9 @@ public class SaleService {
             case "year":
                 period = LocalDateTime.now().minusYears(1);
                 break;
+            case "all":
+                period = LocalDateTime.of(1900, 1, 1, 0, 0, 0);
+                break;
             default:
                 throw new IllegalArgumentException("sort 값이 옳바르지 않습니다.");
         }
