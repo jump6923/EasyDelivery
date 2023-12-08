@@ -25,26 +25,20 @@ public class SaleController {
      */
 
     @GetMapping("/total") // 총 매출
-    public ResponseEntity<TotalSaleResponseDto> getTotalSales(
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
-        TotalSaleResponseDto responseDto = saleService.getTotalSales(userDetails.getUser());
+    public ResponseEntity<TotalSaleResponseDto> getTotalSales(){
+        TotalSaleResponseDto responseDto = saleService.getTotalSales();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/category") // 카테고리별 매출
-    public ResponseEntity<CategorySaleResponseDto> getCategorySales(
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
-        CategorySaleResponseDto responseDto = saleService.getCategorySales(userDetails.getUser());
+    public ResponseEntity<CategorySaleResponseDto> getCategorySales(){
+        CategorySaleResponseDto responseDto = saleService.getCategorySales();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/product") // 상품별
-    public ResponseEntity<ProductSaleListResponseDto> getProductSales(
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
-        ProductSaleListResponseDto responseDto = saleService.getProductSales(userDetails.getUser());
+    public ResponseEntity<ProductSaleListResponseDto> getProductSales(){
+        ProductSaleListResponseDto responseDto = saleService.getProductSales();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

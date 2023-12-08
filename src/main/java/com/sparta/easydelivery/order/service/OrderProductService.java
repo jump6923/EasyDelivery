@@ -5,6 +5,7 @@ import com.sparta.easydelivery.order.entity.Order;
 import com.sparta.easydelivery.order.entity.OrderProduct;
 import com.sparta.easydelivery.order.entity.OrderStatusEnum;
 import com.sparta.easydelivery.order.repository.OrderProductRepository;
+import com.sparta.easydelivery.product.entity.Product;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

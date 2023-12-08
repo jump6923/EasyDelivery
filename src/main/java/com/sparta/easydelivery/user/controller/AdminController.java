@@ -22,27 +22,24 @@ public class AdminController {
     private final UserService userService;
 
     @PatchMapping("/block")
-    public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requestDto,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(userService.blockedChangeUser(requestDto, userDetails.getUser().getId()));
+    public ResponseEntity<?> toggleBlockUser(@RequestBody BlockRequsetDto requestDto) {
+        return ResponseEntity.ok(userService.blockedChangeUser(requestDto));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<UserResponseDto>> getUserList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<UserResponseDto> responseDto = userService.getUserList(userDetails.getUser().getId());
+    public ResponseEntity<List<UserResponseDto>> getUserList() {
+        List<UserResponseDto> responseDto = userService.getUserList();
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable Long userId,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(userService.getUser(userId, userDetails.getUser().getId()));
+    public ResponseEntity<?> getUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getUser(userId));
     }
 
     @PatchMapping("/role")
-    public ResponseEntity<?> toggleRole(@RequestBody RoleRequestDto requestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ResponseEntity.ok(userService.changeRole(requestDto, userDetails.getUser().getId()));
+    public ResponseEntity<?> toggleRole(@RequestBody RoleRequestDto requestDto){
+        return ResponseEntity.ok(userService.changeRole(requestDto));
     }
 
 }

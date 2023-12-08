@@ -44,9 +44,8 @@ public class ProductController {
 
     // 상품 추가
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto,
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        ProductResponseDto responseDto = productService.addProduct(requestDto, userDetails.getUser());
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto) {
+        ProductResponseDto responseDto = productService.addProduct(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -54,20 +53,18 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable Long productId,
-        @Valid @RequestBody ProductUpdateRequestDto requestDto,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
+        @Valid @RequestBody ProductUpdateRequestDto requestDto
     ) {
-        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto, userDetails.getUser());
+        ProductResponseDto responseDto = productService.updateProduct(productId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     // 삭제 기능 - admin만 삭제 가능하도록 구현
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
-        @PathVariable Long productId,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
+        @PathVariable Long productId
     ) {
-        productService.deleteProduct(productId, userDetails.getUser());
+        productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 }

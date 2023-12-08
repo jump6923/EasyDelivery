@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductResponseDto addProduct(ProductRequestDto requestDto, User user) {
+    public ProductResponseDto addProduct(ProductRequestDto requestDto) {
         Product product = new Product(requestDto);
         Product saveProduct = productRepository.save(product);
         return new ProductResponseDto(saveProduct);
@@ -38,13 +38,13 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto, User user) {
+    public ProductResponseDto updateProduct(Long productId, ProductUpdateRequestDto requestDto) {
         Product product = getProductById(productId);
         product.update(requestDto);
         return new ProductResponseDto(product);
     }
 
-    public void deleteProduct(Long productId, User user) {
+    public void deleteProduct(Long productId) {
         Product product = getProductById(productId);
         productRepository.delete(product);
     }

@@ -11,7 +11,6 @@ import com.sparta.easydelivery.order.service.OrderProductService;
 import com.sparta.easydelivery.product.entity.Product;
 import com.sparta.easydelivery.product.repository.ProductRepository;
 import com.sparta.easydelivery.user.entity.User;
-import com.sparta.easydelivery.user.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +22,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SaleService {
 
-    private final UserService userService;
-
     private final OrderProductService orderProductService;
 
     private final OrderRepository orderRepository;
 
     private final ProductRepository productRepository;
 
-    public TotalSaleResponseDto getTotalSales(User user) {
-        userService.isAdminOrException(user);
+    public TotalSaleResponseDto getTotalSales() {
         Long totalSales = 0L;
         List<Order> orderList = orderRepository.findAllByStatus(OrderStatusEnum.COMPLETION);
         for(Order order : orderList){
@@ -41,8 +37,7 @@ public class SaleService {
         return new TotalSaleResponseDto(totalSales);
     }
 
-    public CategorySaleResponseDto getCategorySales(User user) {
-        userService.isAdminOrException(user);
+    public CategorySaleResponseDto getCategorySales() {
         CategorySaleResponseDto responseDto = new CategorySaleResponseDto();
         List<String> categoryList = makeCategoryList();
         for(String categoryName : categoryList){
@@ -52,8 +47,7 @@ public class SaleService {
         return responseDto;
     }
 
-    public ProductSaleListResponseDto getProductSales(User user) {
-        userService.isAdminOrException(user);
+    public ProductSaleListResponseDto getProductSales() {
         ProductSaleListResponseDto responseDto = new ProductSaleListResponseDto();
         List<Product> products = productRepository.findAll();
         for(Product product : products){
