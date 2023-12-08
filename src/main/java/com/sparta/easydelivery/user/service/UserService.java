@@ -103,7 +103,7 @@ public class UserService {
 
         for (PasswordHistory passwordHistory : passwordHistories) {
             if (passwordEncoder.matches(changePassword, passwordHistory.getPassword())) {
-                throw new IllegalArgumentException("최근 3번 이내에 변경 이력이 있는 패스워드 입니다.");
+                throw new DuplicatedPasswordException();
             }
         }
 
