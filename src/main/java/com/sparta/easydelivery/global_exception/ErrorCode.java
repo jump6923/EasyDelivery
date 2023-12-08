@@ -1,14 +1,13 @@
 package com.sparta.easydelivery.global_exception;
 
 import jakarta.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.Locale;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Locale;
 
 @Getter
 public enum ErrorCode {
@@ -26,6 +25,7 @@ public enum ErrorCode {
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "duplicated.username"),
     BLOCKED_USER(HttpStatus.FORBIDDEN, "blocked.user"),
     DUPLICATED_PASSWORD(HttpStatus.CONFLICT, "duplicated.password"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN,"access_denied"),
 
     /* PRODUCT */
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "not.found.product"),

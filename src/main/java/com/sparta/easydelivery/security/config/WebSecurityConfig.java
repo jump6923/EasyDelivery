@@ -4,16 +4,14 @@ import static com.sparta.easydelivery.user.entity.UserRoleEnum.*;
 import static org.springframework.http.HttpMethod.*;
 
 import com.sparta.easydelivery.security.ExceptionHandleFilter;
-import com.sparta.easydelivery.security.exception.CustomAccessDeniedException;
+import com.sparta.easydelivery.security.exception.CustomAccessDeniedHandler;
 import com.sparta.easydelivery.security.jwt.JwtAuthorizationFilter;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
-import com.sparta.easydelivery.user.entity.UserRoleEnum;
 import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +29,7 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -79,6 +78,9 @@ public class WebSecurityConfig {
                             .hasAuthority(ADMIN.getAuthority()) // 유저 관리 기능은 ADMIN만 가능하다.
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
+
+        httpSecurity.exceptionHandling(authenticationManager -> authenticationManager
+            .accessDeniedHandler(customAccessDeniedHandler));
 
         httpSecurity.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(ExceptionHandleFilter(), JwtAuthorizationFilter.class);
