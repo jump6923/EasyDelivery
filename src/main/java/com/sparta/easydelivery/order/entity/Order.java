@@ -52,7 +52,7 @@ public class Order extends TimeStamp {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private final List<OrderProduct> orderProductList = new ArrayList<>();
 
     public Order(OrderRequestDto requestDto, User user) {
