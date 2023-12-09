@@ -3,6 +3,7 @@ package com.sparta.easydelivery.domain.product.entity;
 import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.domain.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.domain.product.dto.ProductUpdateRequestDto;
+import com.sparta.easydelivery.domain.product.exception.NotEnoughStockException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -64,9 +65,13 @@ public class Product extends TimeStamp {
     }
 
     public void reduceStock(int quantity) {
-        if (this.stock - quantity < 0) {
-            throw new IllegalArgumentException("재고가 부족합니다.");
-        }
+        checkStock(quantity);
         this.stock -= quantity;
+    }
+
+    public void checkStock(int quantity) {
+        if (this.stock - quantity < 0) {
+            throw new NotEnoughStockException();
+        }
     }
 }

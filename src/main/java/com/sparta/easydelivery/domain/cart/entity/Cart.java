@@ -2,6 +2,7 @@ package com.sparta.easydelivery.domain.cart.entity;
 
 import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.domain.product.entity.Product;
+import com.sparta.easydelivery.domain.product.exception.NotEnoughStockException;
 import com.sparta.easydelivery.domain.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,9 +38,7 @@ public class Cart extends TimeStamp {
         this.user = user;
         this.product = product;
         this.quantity = quantity;
-        if (product.getStock() - quantity < 0) {
-            throw new IllegalArgumentException("재고가 부족합니다.");
-        }
+        product.checkStock(quantity);
     }
 
     public static Cart create(User user, Product product, int quantity) {
