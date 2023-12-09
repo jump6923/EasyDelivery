@@ -7,7 +7,6 @@ import com.sparta.easydelivery.domain.product.entity.Product;
 import com.sparta.easydelivery.domain.product.exception.NotFoundProductException;
 import com.sparta.easydelivery.domain.product.repository.ProductRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,14 +25,16 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDto getProduct(Long productId) {
         Product product = getProductById(productId);
+        if (product.isDeleted()) {
+            throw new NotFoundProductException();
+        }
         return new ProductResponseDto(product);
     }
 
     @Transactional(readOnly = true)
     public List<ProductResponseDto> getProducts() {
-        return productRepository.findAllByOrderByCategory().stream()
-            .map(ProductResponseDto::new)
-            .collect(Collectors.toList());
+        return productRepository.findAllByOrderByCategory().stream().filter(product ->
+            !product.isDeleted()).map(ProductResponseDto::new).toList();
     }
 
     @Transactional
@@ -43,9 +44,10 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    @Transactional
     public void deleteProduct(Long productId) {
         Product product = getProductById(productId);
-        productRepository.delete(product);
+        product.delete();
     }
 
     @Transactional(readOnly = true)
