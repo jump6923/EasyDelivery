@@ -79,7 +79,6 @@ public class SaleService {
         Long sales = 0L;
         for (Order order : Orders) {
             sales += order.getTotalPrice();
-            System.out.println("order.getTotalPrice() = " + order.getTotalPrice());
         }
         return new PeriodSaleResponseDto(sort, sales);
     }
