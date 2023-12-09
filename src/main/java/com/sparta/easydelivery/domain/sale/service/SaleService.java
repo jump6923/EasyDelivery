@@ -50,7 +50,7 @@ public class SaleService {
 
     public ProductSaleListResponseDto getProductSales() {
         ProductSaleListResponseDto responseDto = new ProductSaleListResponseDto();
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAllByFetchJoinOrderProduct();
         for(Product product : products){
             Long sales = orderProductService.getSaleByProduct(product);
             responseDto.productSaleList(new ProductSaleResponseDto(product.getId(), product.getName(), sales));

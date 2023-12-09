@@ -27,7 +27,7 @@ public class OrderProductService {
     }
 
     public Long getSaleByProduct(Product product) {
-        return getSales(orderProductRepository.findAllByProduct(product));
+        return getSales(product.getOrderProduct());
     }
 
     private Long getSales(List<OrderProduct> orderProductList){

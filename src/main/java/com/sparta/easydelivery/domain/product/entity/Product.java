@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.domain.product.entity;
 
 import com.sparta.easydelivery.common.TimeStamp;
+import com.sparta.easydelivery.domain.order.entity.OrderProduct;
 import com.sparta.easydelivery.domain.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.domain.product.dto.ProductUpdateRequestDto;
 import com.sparta.easydelivery.domain.product.exception.NotEnoughStockException;
@@ -9,7 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +42,9 @@ public class Product extends TimeStamp {
 
     @Column(nullable = false)
     private int stock;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderProduct> orderProduct;
 
     public Product(ProductRequestDto requestDto) {
         this.category = requestDto.getCategory();
