@@ -9,6 +9,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
         List<Product>findAllByOrderByCategory();
 
-        @Query(value = "select p from Product p join fetch p.orderProduct op")
+        @Query(value = "select p from Product p left join fetch p.orderProduct op")
         List<Product> findAllByFetchJoinOrderProduct();
 }
