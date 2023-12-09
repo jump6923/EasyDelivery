@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,8 +44,10 @@ public class Product extends TimeStamp {
     @Column(nullable = false)
     private int stock;
 
+    private boolean isDeleted = false;
+
     @OneToMany(mappedBy = "product")
-    private List<OrderProduct> orderProduct;
+    private List<OrderProduct> orderProduct = new ArrayList<>();
 
     public Product(ProductRequestDto requestDto) {
         this.category = requestDto.getCategory();
@@ -79,5 +82,9 @@ public class Product extends TimeStamp {
         if (this.stock - quantity < 0) {
             throw new NotEnoughStockException();
         }
+    }
+
+    public void delete() {
+        isDeleted = true;
     }
 }
