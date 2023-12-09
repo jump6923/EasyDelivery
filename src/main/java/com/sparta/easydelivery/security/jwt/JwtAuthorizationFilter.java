@@ -3,7 +3,7 @@ package com.sparta.easydelivery.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.easydelivery.global_exception.ErrorCode;
 import com.sparta.easydelivery.global_exception.ErrorResponseDto;
-import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
+import com.sparta.easydelivery.domain.user.implement.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

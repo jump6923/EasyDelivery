@@ -1,13 +1,14 @@
 package com.sparta.easydelivery.security.config;
 
-import static com.sparta.easydelivery.user.entity.UserRoleEnum.*;
+import static com.sparta.easydelivery.domain.user.entity.UserRoleEnum.ADMIN;
+import static com.sparta.easydelivery.domain.user.entity.UserRoleEnum.USER;
 import static org.springframework.http.HttpMethod.*;
 
 import com.sparta.easydelivery.security.ExceptionHandleFilter;
 import com.sparta.easydelivery.security.exception.CustomAccessDeniedHandler;
 import com.sparta.easydelivery.security.jwt.JwtAuthorizationFilter;
 import com.sparta.easydelivery.security.jwt.JwtUtil;
-import com.sparta.easydelivery.user.implement.UserDetailsServiceImpl;
+import com.sparta.easydelivery.domain.user.implement.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
