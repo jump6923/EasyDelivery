@@ -37,6 +37,9 @@ public class Cart extends TimeStamp {
         this.user = user;
         this.product = product;
         this.quantity = quantity;
+        if (product.getStock() - quantity < 0) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
     }
 
     public static Cart create(User user, Product product, int quantity) {

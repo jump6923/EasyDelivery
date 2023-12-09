@@ -36,18 +36,23 @@ public class Product extends TimeStamp {
     @Column(nullable = false)
     private String productDetails;
 
+    @Column(nullable = false)
+    private int stock;
+
     public Product(ProductRequestDto requestDto) {
         this.category = requestDto.getCategory();
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.productDetails = requestDto.getProductDetails();
+        this.stock = requestDto.getStock();
     }
 
-    public Product(String category, String name, Long price, String productDetails) {
+    public Product(String category, String name, Long price, String productDetails, int stock) {
         this.category = category;
         this.name = name;
         this.price = price;
         this.productDetails = productDetails;
+        this.stock = stock;
     }
 
     public void update(ProductUpdateRequestDto requestDto) {
@@ -55,5 +60,13 @@ public class Product extends TimeStamp {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.productDetails = requestDto.getProductDetails();
+        this.stock = requestDto.getStock();
+    }
+
+    public void reduceStock(int quantity) {
+        if (this.stock - quantity < 0) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.stock -= quantity;
     }
 }

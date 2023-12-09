@@ -39,6 +39,7 @@ public class OrderProduct extends TimeStamp {
         this.quantity = cart.getQuantity();
         setProduct(cart.getProduct());
         setOrder(order);
+        product.reduceStock(quantity);
     }
 
     public void setProduct(Product product){

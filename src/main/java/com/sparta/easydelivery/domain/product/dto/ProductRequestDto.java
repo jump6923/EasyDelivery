@@ -14,4 +14,6 @@ public class ProductRequestDto {
     private Long price;
 
     private String productDetails;
+
+    private int stock;
 }
