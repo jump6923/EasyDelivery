@@ -36,21 +36,12 @@ public class OrderProduct extends TimeStamp {
     Product product;
 
     public OrderProduct(Cart cart, Order order) {
+        Product product = cart.getProduct();
+        product.checkDeleted();
         this.quantity = cart.getQuantity();
-        setProduct(cart.getProduct());
-        setOrder(order);
+        this.product = product;
+        this.order = order;
         product.getOrderProduct().add(this);
         product.reduceStock(quantity);
-    }
-
-    public void setProduct(Product product){
-        this.product = product;
-    }
-
-    public void setOrder(Order order){
-        this.order = order;
-        if(!order.getOrderProductList().contains(this)){
-            order.addOrderProduct(this);
-        }
     }
 }

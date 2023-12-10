@@ -2,6 +2,7 @@ package com.sparta.easydelivery.domain.product.entity;
 
 import com.sparta.easydelivery.common.TimeStamp;
 import com.sparta.easydelivery.domain.order.entity.OrderProduct;
+import com.sparta.easydelivery.domain.product.exception.DeletedProductException;
 import com.sparta.easydelivery.domain.product.dto.ProductRequestDto;
 import com.sparta.easydelivery.domain.product.dto.ProductUpdateRequestDto;
 import com.sparta.easydelivery.domain.product.exception.NotEnoughStockException;
@@ -86,5 +87,11 @@ public class Product extends TimeStamp {
 
     public void delete() {
         isDeleted = true;
+    }
+
+    public void checkDeleted() {
+        if (isDeleted) {
+            throw new DeletedProductException();
+        }
     }
 }
