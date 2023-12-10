@@ -35,6 +35,7 @@ public class Cart extends TimeStamp {
     private int quantity;
 
     private Cart(User user, Product product, int quantity) {
+        product.checkDeleted();
         this.user = user;
         this.product = product;
         this.quantity = quantity;

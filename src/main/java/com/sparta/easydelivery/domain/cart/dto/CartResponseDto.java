@@ -11,6 +11,7 @@ public class CartResponseDto {
     private Long price;
     private int quantity;
     private boolean isOutOfStock = false;
+    private boolean isDeleted;
 
     public CartResponseDto(Cart cart) {
         this.id = cart.getId();
@@ -20,5 +21,6 @@ public class CartResponseDto {
         if (cart.getProduct().getStock() - quantity < 0) {
             isOutOfStock = true;
         }
+        this.isDeleted = cart.getProduct().isDeleted();
     }
 }
