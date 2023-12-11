@@ -29,6 +29,8 @@ public enum ErrorCode {
 
     /* PRODUCT */
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "not.found.product"),
+    NOT_ENOUGH_STOCK(HttpStatus.BAD_REQUEST, "not.enough.stock"), // 400 ? 404// ?
+    DELETED_PRODUCT(HttpStatus.BAD_REQUEST, "deleted.product"),
 
     /* CART */
     NOT_FOUND_CART(HttpStatus.NOT_FOUND, "not.found.cart"),

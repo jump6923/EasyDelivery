@@ -76,10 +76,4 @@ public class Order extends TimeStamp {
         this.status = status;
     }
 
-    public void addOrderProduct(OrderProduct orderProduct){
-        this.orderProductList.add(orderProduct);
-        if(orderProduct.getOrder() != this){
-            orderProduct.setOrder(this);
-        }
-    }
 }

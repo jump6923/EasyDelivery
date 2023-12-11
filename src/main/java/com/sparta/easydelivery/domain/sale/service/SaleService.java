@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.domain.sale.service;
 
 import com.sparta.easydelivery.domain.sale.dto.CategorySaleResponseDto;
+import com.sparta.easydelivery.domain.sale.dto.PeriodSaleResponseDto;
 import com.sparta.easydelivery.domain.sale.dto.ProductSaleResponseDto;
 import com.sparta.easydelivery.domain.sale.dto.ProductSaleListResponseDto;
 import com.sparta.easydelivery.domain.sale.dto.TotalSaleResponseDto;
@@ -10,6 +11,7 @@ import com.sparta.easydelivery.domain.order.repository.OrderRepository;
 import com.sparta.easydelivery.domain.order.service.OrderProductService;
 import com.sparta.easydelivery.domain.product.entity.Product;
 import com.sparta.easydelivery.domain.product.repository.ProductRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +50,7 @@ public class SaleService {
 
     public ProductSaleListResponseDto getProductSales() {
         ProductSaleListResponseDto responseDto = new ProductSaleListResponseDto();
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAllByFetchJoinOrderProduct();
         for(Product product : products){
             Long sales = orderProductService.getSaleByProduct(product);
             responseDto.productSaleList(new ProductSaleResponseDto(product.getId(), product.getName(), sales));
@@ -71,4 +73,37 @@ public class SaleService {
        return categoryList;
     }
 
+    public PeriodSaleResponseDto getPeriodSales(String sort) {
+        LocalDateTime period = StringLocalDateTimeConvert(sort);
+        List<Order> Orders = orderRepository.findAllByCreatedAtGreaterThan(period);
+        Long sales = 0L;
+        for (Order order : Orders) {
+            sales += order.getTotalPrice();
+        }
+        return new PeriodSaleResponseDto(sort, sales);
+    }
+
+    private LocalDateTime StringLocalDateTimeConvert(String sort) {
+        LocalDateTime period;
+        switch (sort) {
+            case "day":
+                period = LocalDateTime.now().minusDays(1);
+                break;
+            case "week":
+                period = LocalDateTime.now().minusWeeks(1);
+                break;
+            case "month":
+                period = LocalDateTime.now().minusMonths(1);
+                break;
+            case "year":
+                period = LocalDateTime.now().minusYears(1);
+                break;
+            case "all":
+                period = LocalDateTime.of(1900, 1, 1, 0, 0, 0);
+                break;
+            default:
+                throw new IllegalArgumentException("sort 값이 옳바르지 않습니다.");
+        }
+        return period;
+    }
 }

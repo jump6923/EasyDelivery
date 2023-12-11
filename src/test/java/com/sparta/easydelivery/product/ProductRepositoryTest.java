@@ -42,7 +42,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Bread data : Bread.values()) {
             Product product = new Product("bread", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -57,7 +57,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Cheese data : Cheese.values()) {
             Product product = new Product("cheese", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -72,7 +72,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Salad data : Salad.values()) {
             Product product = new Product("salad", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -87,7 +87,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Sandwich15 data : Sandwich15.values()) {
             Product product = new Product("sandwich15", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -102,7 +102,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Sandwich30 data : Sandwich30.values()) {
             Product product = new Product("sandwich30", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -117,7 +117,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Beverage data : Beverage.values()) {
             Product product = new Product("beverage", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -132,7 +132,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Side data : Side.values()) {
             Product product = new Product("side", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -147,7 +147,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Wrap data : Wrap.values()) {
             Product product = new Product("wrap", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -162,7 +162,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Sauce data : Sauce.values()) {
             Product product = new Product("sauce", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);
@@ -177,7 +177,7 @@ class ProductRepositoryTest {
         // for문으로 enum 데이터를 list에 저장
         for (Veggie data : Veggie.values()) {
             Product product = new Product("veggie", data.getName(), data.getPrice(),
-                data.getProductDetails());
+                data.getProductDetails(), data.getStock());
             productList.add(product);
         }
         productRepository.saveAll(productList);

@@ -1,6 +1,7 @@
 package com.sparta.easydelivery.domain.sale.controller;
 
 import com.sparta.easydelivery.domain.sale.dto.CategorySaleResponseDto;
+import com.sparta.easydelivery.domain.sale.dto.PeriodSaleResponseDto;
 import com.sparta.easydelivery.domain.sale.dto.ProductSaleListResponseDto;
 import com.sparta.easydelivery.domain.sale.dto.TotalSaleResponseDto;
 import com.sparta.easydelivery.domain.sale.service.SaleService;
@@ -38,5 +39,12 @@ public class SaleController {
     public ResponseEntity<ProductSaleListResponseDto> getProductSales(){
         ProductSaleListResponseDto responseDto = saleService.getProductSales();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/period") // 기간별
+    public ResponseEntity<PeriodSaleResponseDto> getPeriodSales(String sort) {
+        PeriodSaleResponseDto responseDto = saleService.getPeriodSales(sort);
+
+        return ResponseEntity.ok(responseDto);
     }
 }

@@ -12,4 +12,6 @@ public class ProductUpdateRequestDto {
 
     private String productDetails;
 
+    private int stock;
+
 }
